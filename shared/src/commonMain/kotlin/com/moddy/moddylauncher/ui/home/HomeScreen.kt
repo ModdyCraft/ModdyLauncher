@@ -20,7 +20,6 @@ fun HomeScreen() {
             value = "",
             onValueChange = {},
             label = { Text("Nickname") },
-            placeholder = { Text("LOLES") },
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedButton(

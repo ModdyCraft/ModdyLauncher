@@ -16,26 +16,31 @@ import androidx.compose.ui.util.fastForEachIndexed
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun NavBar() {
+fun NavBar(
+    content: @Composable BoxScope.() -> Unit
+) {
     val navList = listOf("Instances", "Console", "Auth", "Settings")
 
-    Row(
-        modifier = Modifier.fillMaxWidth().height(20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        navList.fastForEachIndexed { i, nav ->
-            Text(
-                nav,
-                style = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center),
-                modifier = Modifier
-                    .clickable {}
-                    .weight(1f)
-                    .fillMaxHeight()
-            )
-            if (i <= navList.lastIndex) {
-                VerticalDivider(modifier = Modifier.fillMaxHeight())
+    Row(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().height(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            navList.fastForEachIndexed { i, nav ->
+                Text(
+                    nav,
+                    style = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center),
+                    modifier = Modifier
+                        .clickable {}
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+                if (i <= navList.lastIndex) {
+                    VerticalDivider(modifier = Modifier.fillMaxHeight())
+                }
             }
         }
+        Box(Modifier.fillMaxSize(), content = content)
     }
 }

@@ -1,5 +1,6 @@
 package com.moddy.moddylauncher.data.remote
 
+import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.domain.manifest.Latest
 import com.moddy.moddylauncher.domain.manifest.ManifestV2
 import com.moddy.moddylauncher.domain.manifest.Version
@@ -7,6 +8,8 @@ import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.serialization.json.Json
+import java.io.File
 
 class MinecraftApiImpl(
     val client: HttpClient,
@@ -24,9 +27,12 @@ class MinecraftApiImpl(
     }
 
     override suspend fun getVersion(versionId: String): VersionManifest {
+        val manifest = File(LauncherPaths.versions, "$versionId.json")
+
+        if (manifest.exists()) return Json.decodeFromString<VersionManifest>(manifest.readText())
+
         val ver = getManifest().versions.find { it.id == versionId }!!
 
         return client.get(ver.url).body()
     }
-
 }

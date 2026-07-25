@@ -22,21 +22,68 @@ object LauncherPaths {
         }
     }
 
+    /**
+     * Carpeta del launcher
+     */
     val launcher = File(baseDir, ".ModdyLauncher")
+
+    /**
+     * Carpeta de logs del launcher
+     */
     val launcherLogs = File(launcher, "logs")
+
+    /**
+     * Carpeta de archivos para el juego
+     */
     val meta = File(launcher, "meta")
 
+    /**
+     * Carpeta de los assets del juego
+     */
     val assets = File(meta, "assets")
+
+    /**
+     * Carpeta donde se guardan los manifest de los assets
+     */
+    val index = File(launcher, "index")
+
+    /**
+     * Carpeta donde se guardan los assets de los assets
+     */
+    val objects = File(launcher, "objects")
+
+    /**
+     * Carpeta de versiones de java
+     */
     val javaVersions = File(meta, "java_versions")
+
+    /**
+     * Carpeta de dependencias del juego
+     */
     val libraries = File(meta, "libraries")
+
+    /**
+     * Carpeta de logs de configuracion
+     */
     val logConfigs = File(meta, "log_configs")
+
+    /**
+     * Carpeta de dependencias nativas del juego
+     */
     val natives = File(meta, "natives")
+
+    /**
+     * Carpeta de versiones del juego
+     */
     val versions = File(meta, "versions")
 
+    /**
+     * Carpeta de perfiles creados
+     */
     val profiles = File(launcher, "profiles")
 
     // Representa la estructura de un Perfil específico
-    class ProfileDirectory(val root: File) {
+    class ProfileDirectory(root: File) {
         val dataPacks = File(root, "datapacks")
         val crashReports = File(root, "crash-reports")
         val mods = File(root, "mods")

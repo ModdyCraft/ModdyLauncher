@@ -14,16 +14,20 @@ import java.io.File
 class DownloadRepoImpl(
     private val client: HttpClient,
 ) : DownloadRepository {
-    override suspend fun download(url: String, destination: File) {
-        val response = client.get(url)
+    override suspend fun downloadFile(url: String, destination: File) {
 
-        destination.outputStream().use { output ->
-            response.bodyAsChannel().copyTo(output)
-        }
+        if (destination.exists()) return
+
+        println("Downloading ${destination.path}")
+
+        client.get(url)
+            .bodyAsChannel()
+            .copyTo(destination.outputStream())
+
+        println("Downloaded ${destination.path}")
     }
 
     override suspend fun downloadFilesInParallel(
-        parent: File,
         files: List<Pair<String, File>>,
         maxParallelDownloads: Int
     ) = coroutineScope {
@@ -35,7 +39,6 @@ class DownloadRepoImpl(
                 async {
                     semaphore.withPermit {
                         downloadFile(
-                            client = client,
                             url = url,
                             destination = destination
                         )

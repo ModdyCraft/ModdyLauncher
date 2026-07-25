@@ -17,11 +17,11 @@ suspend fun downloadFile(
     url: String,
     destination: File
 ) {
-    val response = client.get(url)
+    if (destination.exists()) return
 
-    destination.outputStream().use { output ->
-        response.bodyAsChannel().copyTo(output)
-    }
+    client.get(url)
+        .bodyAsChannel()
+        .copyTo(destination.outputStream())
 }
 
 suspend fun downloadFilesInParallel(

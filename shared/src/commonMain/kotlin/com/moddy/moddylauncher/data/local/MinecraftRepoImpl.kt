@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.data.local
 import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.data.download.DownloadRepository
 import com.moddy.moddylauncher.data.remote.MinecraftApi
+import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -31,8 +32,12 @@ class MinecraftRepoImpl(
         // Descargando Cliente
         downloader.downloadFile(version.downloads.client.url, File(LauncherPaths.versions, "${version.id}.jar"))
 
-        val libraries = version.libraries.map { library ->
-            Pair(library.downloads.artifact.url, File(LauncherPaths.libraries, library.downloads.artifact.path))
+        val libraries = version.libraries.mapNotNull { library ->
+            if (!isLibraryAllowed(library)) {
+                return@mapNotNull null
+            } else {
+                Pair(library.downloads.artifact.url, File(LauncherPaths.libraries, library.downloads.artifact.path))
+            }
         }
 
         // Descargando Dependencias
@@ -71,5 +76,26 @@ class MinecraftRepoImpl(
         }
 
         downloader.downloadFilesInParallel(assets, 12)
+    }
+
+    private fun isLibraryAllowed(library: Library): Boolean {
+        if (library.rules == null) return true
+
+        val currentOs = when {
+            LauncherPaths.os.contains("win") -> "windows"
+            LauncherPaths.os.contains("mac") -> "osx"
+            else -> "linux"
+        }
+
+        var allowed = false
+
+        for ((action, os) in library.rules) {
+
+            if (os.name == currentOs) {
+                allowed = action == "allow"
+            }
+        }
+
+        return allowed
     }
 }

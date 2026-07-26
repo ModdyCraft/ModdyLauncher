@@ -43,31 +43,33 @@ class MinecraftRepoImpl(
     }
 
     private suspend fun downloadAssets(version: VersionManifest) {
-        val manifestFile = File(LauncherPaths.index, "${version.assetIndex.id}.json")
+        val manifestFile = LauncherPaths.index.resolve("${version.assetIndex.id}.json")
 
-        var manifest: JsonElement? = null
-
-        if (!manifestFile.exists()) {
-            manifest = client.get(version.assetIndex.url).body<JsonElement>()
-            manifestFile.writeText(json.encodeToString(manifest))
+        val manifest = if (manifestFile.exists()) {
+            json.parseToJsonElement(manifestFile.readText())
+        } else {
+            client.get(version.assetIndex.url)
+                .body<JsonElement>()
+                .also { manifest ->
+                    manifestFile.writeText(json.encodeToString(manifest))
+                }
         }
 
-        manifest = json.parseToJsonElement(manifestFile.readText())
+        val assets = manifest.jsonObject["objects"]!!.jsonObject.values.map { value ->
 
-        val assets = manifest.jsonObject.entries.map { (name, value) ->
-            val obj = value.jsonObject
+            val hash = value.jsonObject["hash"]?.jsonPrimitive?.content
+                ?: error("Asset manifest entry does not contain a hash")
 
-            val hash = obj["hash"]!!.jsonPrimitive.content
-
-            val folder = hash.substring(0, 2)
+            val folder = hash.take(2)
 
             val url = "https://resources.download.minecraft.net/$folder/$hash"
+            val destination = LauncherPaths.objects
+                .resolve(folder)
+                .resolve(hash)
 
-            val destination = LauncherPaths.objects.resolve(folder).resolve(hash)
-
-            return@map Pair(url, destination)
+            url to destination
         }
 
-        downloader.downloadFilesInParallel(assets, 6)
+        downloader.downloadFilesInParallel(assets, 12)
     }
 }

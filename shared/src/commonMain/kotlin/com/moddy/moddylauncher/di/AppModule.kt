@@ -8,9 +8,11 @@ import com.moddy.moddylauncher.data.remote.MinecraftApi
 import com.moddy.moddylauncher.data.remote.MinecraftApiImpl
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -28,6 +30,26 @@ val AppModule = module {
                         ignoreUnknownKeys = true
                     }
                 )
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 60_000
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 60_000
+            }
+
+            install(HttpRequestRetry) {
+                maxRetries = 3
+
+                retryIf { _, response ->
+                    response.status.value in 500..599
+                }
+
+                retryOnExceptionIf { _, cause ->
+                    cause is IOException
+                }
+
+                exponentialDelay()
             }
         }
     }

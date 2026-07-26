@@ -16,10 +16,7 @@ class DownloadRepoImpl(
 ) : DownloadRepository {
     override suspend fun downloadFile(url: String, destination: File) {
 
-        if (destination.exists()) {
-            println("Existing file ${destination.path}")
-            return
-        }
+        if (destination.exists()) return
 
         destination.parentFile.mkdirs()
 

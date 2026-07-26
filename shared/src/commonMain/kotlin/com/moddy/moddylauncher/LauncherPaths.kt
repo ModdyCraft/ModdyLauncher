@@ -45,12 +45,12 @@ object LauncherPaths {
     /**
      * Carpeta donde se guardan los manifest de los assets
      */
-    val index = File(launcher, "index")
+    val index = File(assets, "index")
 
     /**
      * Carpeta donde se guardan los assets de los assets
      */
-    val objects = File(launcher, "objects")
+    val objects = File(assets, "objects")
 
     /**
      * Carpeta de versiones de java
@@ -127,7 +127,9 @@ object LauncherPaths {
             logConfigs,
             natives,
             versions,
-            profiles
+            profiles,
+            index,
+            objects
         )
         baseFolders.forEach { if (!it.exists()) it.mkdirs() }
     }

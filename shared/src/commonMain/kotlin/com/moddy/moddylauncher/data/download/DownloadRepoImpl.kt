@@ -16,15 +16,20 @@ class DownloadRepoImpl(
 ) : DownloadRepository {
     override suspend fun downloadFile(url: String, destination: File) {
 
-        println("Existing file ${destination.path}")
+        if (destination.exists()) {
+            println("Existing file ${destination.path}")
+            return
+        }
 
-        if (destination.exists()) return
+        destination.parentFile.mkdirs()
 
         println("Downloading ${destination.path}")
 
-        client.get(url)
-            .bodyAsChannel()
-            .copyTo(destination.outputStream())
+        val response = client.get(url)
+
+        destination.outputStream().use { output ->
+            response.bodyAsChannel().copyTo(output)
+        }
 
         println("Downloaded ${destination.path}")
     }
@@ -36,7 +41,7 @@ class DownloadRepoImpl(
         val semaphore = Semaphore(maxParallelDownloads)
 
         files
-            .distinctBy { it.first }
+            .distinctBy { it.second }
             .map { (url, destination) ->
                 async {
                     semaphore.withPermit {

@@ -49,5 +49,7 @@ class DownloadRepoImpl(
                     }
                 }
             }.awaitAll()
+
+        println("Downloaded ${files.size} files")
     }
 }

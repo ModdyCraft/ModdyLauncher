@@ -9,5 +9,5 @@ interface DownloadRepository {
     suspend fun downloadFilesInParallel(
         files: List<Pair<String, File>>,
         maxParallelDownloads: Int = 3
-    ): List<Unit>
+    )
 }

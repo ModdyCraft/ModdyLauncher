@@ -1,5 +1,8 @@
 package com.moddy.moddylauncher.domain.manifest
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Version(
     val complianceLevel: Int,
     val id: String,

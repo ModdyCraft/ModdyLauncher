@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeScreenViewModel = koinViewModel(),
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -23,7 +26,7 @@ fun HomeScreen() {
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedButton(
-            onClick = {},
+            onClick = viewModel::launch,
         ) {
             Text("PLAY")
         }

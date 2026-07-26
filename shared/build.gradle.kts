@@ -23,7 +23,14 @@ kotlin {
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negociation)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

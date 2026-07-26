@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.data.local
 import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.data.download.DownloadRepository
 import com.moddy.moddylauncher.data.remote.MinecraftApi
+import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
@@ -45,6 +46,8 @@ class MinecraftRepoImpl(
 
         // Descargando Assets
         downloadAssets(version)
+
+        execute(version)
     }
 
     private suspend fun downloadAssets(version: VersionManifest) {
@@ -98,4 +101,133 @@ class MinecraftRepoImpl(
 
         return allowed
     }
+
+    private fun execute(version: VersionManifest) {
+        val defaultUserJvm = version.arguments.defaultUserJvm
+            .mapNotNull { arg ->
+                if (isArgAllowed(arg)) {
+                    arg.value
+                } else {
+                    null
+                }
+            }
+            .flatten()
+
+        val command = mutableListOf<String>()
+
+        // Java
+        command += javaExecutable
+
+        // Argumentos JVM
+        command += defaultUserJvm
+
+        // Classpath
+        command += "-cp"
+        command += buildClasspath(version)
+
+        // Main class
+        command += version.mainClass
+
+        // Argumentos del juego
+        command += version.arguments.game
+            .mapNotNull { arg ->
+                if (isArgAllowed(arg)) {
+                    arg.value
+                } else {
+                    null
+                }
+            }
+            .flatten()
+
+        println("Executing Minecraft:")
+        println(command.joinToString(" "))
+
+        val process = ProcessBuilder(command)
+            .directory(LauncherPaths.launcher)
+            .inheritIO()
+            .start()
+
+        val exitCode = process.waitFor()
+
+        println("Minecraft exited with code: $exitCode")
+    }
+
+    private fun isArgAllowed(arg: DefaultUserJvm): Boolean {
+        if (arg.rules == null) return true
+
+        val currentOs = when {
+            LauncherPaths.os.contains("win", ignoreCase = true) -> "windows"
+            LauncherPaths.os.contains("mac", ignoreCase = true) -> "osx"
+            else -> "linux"
+        }
+
+        var allowed = false
+
+        for ((action, os) in arg.rules) {
+            if (os?.name != currentOs) continue
+
+            // Si es Windows, comprobar el rango de versión
+            if (currentOs == "windows" && os.versionRange != null) {
+                val currentVersion = LauncherPaths.osVersion
+
+                val minVersion = os.versionRange.min
+                val maxVersion = os.versionRange.max
+
+                if (minVersion != null && compareVersions(currentVersion, minVersion) < 0) {
+                    continue
+                }
+
+                if (maxVersion != null && compareVersions(currentVersion, maxVersion) > 0) {
+                    continue
+                }
+            }
+
+            allowed = action == "allow"
+        }
+
+        return allowed
+    }
+
+    private fun compareVersions(
+        current: String,
+        target: String
+    ): Int {
+        val currentParts = current.split(".").map { it.toIntOrNull() ?: 0 }
+        val targetParts = target.split(".").map { it.toIntOrNull() ?: 0 }
+
+        val maxSize = maxOf(currentParts.size, targetParts.size)
+
+        for (i in 0 until maxSize) {
+            val currentPart = currentParts.getOrElse(i) { 0 }
+            val targetPart = targetParts.getOrElse(i) { 0 }
+
+            if (currentPart < targetPart) return -1
+            if (currentPart > targetPart) return 1
+        }
+
+        return 0
+    }
+
+    sealed class ArgumentValue {
+        data class Single(val value: String) : ArgumentValue()
+        data class Multiple(val value: List<String>) : ArgumentValue()
+    }
+
+    private fun buildClasspath(version: VersionManifest): String {
+        val libraries = version.libraries
+            .filter { isLibraryAllowed(it) }
+            .map { library ->
+                File(LauncherPaths.libraries, library.downloads.artifact.path)
+            }
+
+        val clientJar = File(LauncherPaths.versions, "${version.id}.jar").absolutePath
+
+        return (libraries + clientJar)
+            .joinToString(File.pathSeparator)
+    }
 }
+
+val javaExecutable = ProcessHandle.current()
+    .info()
+    .command()
+    .orElse(null)

@@ -5,6 +5,7 @@ import java.io.File
 object LauncherPaths {
 
     val os = System.getProperty("os.name").lowercase()
+    val osVersion = System.getProperty("os.version")
 
     // CORRECCIÓN: os.contains() es más seguro que un "=" exacto,
     // ya que System.getProperty("os.name") suele devolver "Windows 11", "Mac OS X", etc.

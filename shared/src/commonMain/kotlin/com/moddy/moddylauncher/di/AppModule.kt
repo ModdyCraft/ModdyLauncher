@@ -2,6 +2,8 @@ package com.moddy.moddylauncher.di
 
 import com.moddy.moddylauncher.data.download.DownloadRepoImpl
 import com.moddy.moddylauncher.data.download.DownloadRepository
+import com.moddy.moddylauncher.data.local.MinecraftLauncher
+import com.moddy.moddylauncher.data.local.MinecraftLauncherImpl
 import com.moddy.moddylauncher.data.local.MinecraftRepoImpl
 import com.moddy.moddylauncher.data.local.MinecraftRepository
 import com.moddy.moddylauncher.data.remote.MinecraftApi
@@ -56,7 +58,9 @@ val AppModule = module {
 
     single<MinecraftApi> { MinecraftApiImpl(get()) }
 
-    single<MinecraftRepository> { MinecraftRepoImpl(get(), get(), get()) }
+    single<MinecraftRepository> { MinecraftRepoImpl(get(), get(), get(), get()) }
+
+    single<MinecraftLauncher> { MinecraftLauncherImpl() }
 
     single<DownloadRepository> { DownloadRepoImpl(get()) }
 }

@@ -9,5 +9,5 @@ data class Arguments(
     @SerialName("default-user-jvm")
     val defaultUserJvm: List<DefaultUserJvm>,
     val game: List<JsonElement>,
-    val jvm: List<DefaultUserJvm>
+    val jvm: List<JsonElement>
 )

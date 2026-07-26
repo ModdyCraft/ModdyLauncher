@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DefaultUserJvm(
-    val rules: List<Rule>,
-    val value: List<String>
+    val rules: List<Rule>? = null,
+    val value: List<String>? = null,
 )

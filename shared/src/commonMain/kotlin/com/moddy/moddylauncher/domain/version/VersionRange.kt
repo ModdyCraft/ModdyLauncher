@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VersionRange(
-    val max: String,
-    val min: String
+    val max: String? = null,
+    val min: String? = null,
 )

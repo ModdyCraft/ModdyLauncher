@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Library(
     val downloads: DownloadsX,
     val name: String,
-    val rules: List<RuleX>
+    val rules: List<RuleX>? = null
 )

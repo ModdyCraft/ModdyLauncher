@@ -95,3 +95,31 @@ fun compareVersions(
 
     return 0
 }
+
+fun resolveArgument(
+    argument: String,
+    versionId: String,
+    assetIndex: String
+): String {
+
+    val variables = mapOf(
+        "\${auth_player_name}" to "Moddy",
+        "\${version_name}" to versionId,
+        "\${game_directory}" to LauncherPaths.versions.absolutePath,
+        "\${assets_root}" to LauncherPaths.assets.absolutePath,
+        "\${assets_index_name}" to assetIndex,
+        "\${auth_uuid}" to "TU-UUID",
+        "\${auth_access_token}" to "TU-ACCESS-TOKEN",
+        "\${clientid}" to "TU-CLIENT-ID",
+        "\${auth_xuid}" to "TU-XUID",
+        "\${version_type}" to "release",
+        "\${resolution_width}" to "548",
+        "\${resolution_height}" to "408",
+        "\${quickPlayPath}" to "TU-QUICK-PLAY-PATH",
+        "\${quickPlaySingleplayer}" to "TU-QUICK-PLAY-SINGLEPLAYER",
+        "\${quickPlayMultiplayer}" to "TU-QUICK-PLAY-MULTIPLAYER",
+        "\${quickPlayRealms}" to "TU-QUICK-PLAY-REALMS"
+    )
+
+    return variables[argument] ?: argument
+}

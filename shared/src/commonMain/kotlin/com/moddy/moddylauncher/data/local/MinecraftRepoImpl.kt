@@ -105,6 +105,10 @@ class MinecraftRepoImpl(
     private fun execute(version: VersionManifest) {
         val xdxd = launcher.buildDefaultJvmArgs(version.arguments.defaultUserJvm)
 
-        print(xdxd)
+        // print(xdxd)
+
+        val odods = launcher.buildGameArgs(version.arguments.game)
+
+        print(odods)
     }
 }

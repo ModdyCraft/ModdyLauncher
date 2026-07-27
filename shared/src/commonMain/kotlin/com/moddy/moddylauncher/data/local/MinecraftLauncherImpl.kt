@@ -29,7 +29,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
         return newList
     }
 
-    override fun buildGameArgs(args: List<JsonElement>): List<String> {
+    override fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String> {
         val ignoredArgs = setOf(
             "--demo",
             "--quickPlayPath",
@@ -68,8 +68,8 @@ class MinecraftLauncherImpl : MinecraftLauncher {
                     .map {
                         resolveArgument(
                             it,
-                            versionId = "TODO()",
-                            assetIndex = "TODO()"
+                            versionId = versionId,
+                            assetIndex = assetIndex
                         )
                     }
             }

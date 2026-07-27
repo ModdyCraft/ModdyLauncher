@@ -14,7 +14,7 @@ interface MinecraftLauncher {
         maxMem: MemoryRam = MemoryRam.G4
     ): List<String>
 
-    fun buildGameArgs(args: List<JsonElement>): List<String>
+    fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String>
 
     fun buildJVMArgs(args: List<JsonElement>): List<String>
 

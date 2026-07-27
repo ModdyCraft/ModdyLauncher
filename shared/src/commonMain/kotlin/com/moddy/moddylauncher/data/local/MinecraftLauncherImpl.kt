@@ -1,13 +1,16 @@
 package com.moddy.moddylauncher.data.local
 
+import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
+import com.moddy.moddylauncher.domain.version.Library
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import java.io.File
 
 class MinecraftLauncherImpl : MinecraftLauncher {
     override fun launch() {
@@ -79,7 +82,15 @@ class MinecraftLauncherImpl : MinecraftLauncher {
         TODO("Not yet implemented")
     }
 
-    override fun buildClasspath() {
-        TODO("Not yet implemented")
+    override fun buildClasspath(libraries: List<Library>, versionId: String): String {
+        val libraries = libraries
+            .map { library ->
+                File(LauncherPaths.libraries, library.downloads.artifact.path)
+            }
+
+        val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath
+
+        return (libraries + clientJar)
+            .joinToString(File.pathSeparator)
     }
 }

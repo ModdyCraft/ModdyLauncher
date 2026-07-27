@@ -107,8 +107,16 @@ class MinecraftRepoImpl(
 
         // print(xdxd)
 
-        val odods = launcher.buildGameArgs(version.arguments.game)
+        val odods = launcher.buildGameArgs(
+            version.arguments.game,
+            assetIndex = version.id,
+            versionId = version.assets
+        )
 
-        print(odods)
+        // print(odods)
+
+        val asdasd = launcher.buildClasspath(versionId = version.id, libraries = version.libraries)
+
+        print(asdasd)
     }
 }

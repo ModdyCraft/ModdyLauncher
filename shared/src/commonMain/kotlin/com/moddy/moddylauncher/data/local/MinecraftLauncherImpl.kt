@@ -35,7 +35,11 @@ class MinecraftLauncherImpl : MinecraftLauncher {
             "--quickPlayPath",
             "--quickPlaySingleplayer",
             "--quickPlayMultiplayer",
-            "--quickPlayRealms"
+            "--quickPlayRealms",
+            "\${quickPlayPath}",
+            "\${quickPlaySingleplayer}",
+            "\${quickPlayMultiplayer}",
+            "\${quickPlayRealms}"
         )
 
         return args

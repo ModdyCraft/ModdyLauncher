@@ -115,10 +115,6 @@ fun resolveArgument(
         "\${version_type}" to "release",
         "\${resolution_width}" to "548",
         "\${resolution_height}" to "408",
-        "\${quickPlayPath}" to "TU-QUICK-PLAY-PATH",
-        "\${quickPlaySingleplayer}" to "TU-QUICK-PLAY-SINGLEPLAYER",
-        "\${quickPlayMultiplayer}" to "TU-QUICK-PLAY-MULTIPLAYER",
-        "\${quickPlayRealms}" to "TU-QUICK-PLAY-REALMS"
     )
 
     return variables[argument] ?: argument

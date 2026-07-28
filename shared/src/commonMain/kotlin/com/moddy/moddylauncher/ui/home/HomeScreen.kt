@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.moddy.moddylauncher.ui.components.DropdownField
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -23,6 +24,12 @@ fun HomeScreen(
             value = "",
             onValueChange = {},
             label = { Text("Nickname") },
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        DropdownField(
+            options = emptyList(),
+            selectedOption = "TODO()",
+            onOptionSelected = {}
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedButton(

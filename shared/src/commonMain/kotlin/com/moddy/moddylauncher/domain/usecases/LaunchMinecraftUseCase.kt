@@ -17,7 +17,7 @@ class LaunchMinecraftUseCase(
         if (user == null) {
             database.createuser(UserData(userName))
         } else if (user.username != userName) {
-            database.createuser(UserData(userName))
+            database.createuser(user.copy(username = userName))
         }
 
         launcher.playVersion(version)

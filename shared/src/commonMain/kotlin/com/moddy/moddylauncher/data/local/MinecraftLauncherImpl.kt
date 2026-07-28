@@ -89,6 +89,8 @@ class MinecraftLauncherImpl(
 
         val user = database.getUser()
 
+        print("USER: $user")
+
         val ignoredArgs = setOf(
             "--demo",
             "--quickPlayPath",

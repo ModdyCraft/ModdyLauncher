@@ -16,6 +16,8 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val AppModule = module {
@@ -27,17 +29,16 @@ val AppModule = module {
             install(ContentNegotiation) {
                 json(
                     Json {
-                        prettyPrint = true
-                        isLenient = true
                         ignoreUnknownKeys = true
+                        isLenient = true
                     }
                 )
             }
 
             install(HttpTimeout) {
-                requestTimeoutMillis = 60_000
+                requestTimeoutMillis = 90_000
                 connectTimeoutMillis = 30_000
-                socketTimeoutMillis = 60_000
+                socketTimeoutMillis = 90_000
             }
 
             install(HttpRequestRetry) {
@@ -60,7 +61,7 @@ val AppModule = module {
 
     single<MinecraftRepository> { MinecraftRepoImpl(get(), get(), get(), get()) }
 
-    single<MinecraftLauncher> { MinecraftLauncherImpl() }
+    singleOf(::MinecraftLauncherImpl) bind MinecraftLauncher::class
 
     single<DownloadRepository> { DownloadRepoImpl(get()) }
 }

@@ -4,6 +4,7 @@ import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.domain.manifest.Latest
 import com.moddy.moddylauncher.domain.manifest.ManifestV2
 import com.moddy.moddylauncher.domain.manifest.Version
+import com.moddy.moddylauncher.domain.usecases.VersionType
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -14,16 +15,28 @@ import java.io.File
 class MinecraftApiImpl(
     val client: HttpClient,
 ) : MinecraftApi {
+
+    private var manifest: ManifestV2? = null
+
     override suspend fun getManifest(): ManifestV2 {
-        return client.get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json").body()
+        return manifest ?: client
+            .get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
+            .body<ManifestV2>()
+            .also {
+                manifest = it
+            }
     }
 
     override suspend fun getLatest(): Latest {
         return getManifest().latest
     }
 
-    override suspend fun getVersions(): List<Version> {
-        return getManifest().versions
+    override suspend fun getVersions(vararg filter: VersionType): List<Version> {
+        return getManifest().versions.filter { version ->
+            filter.any { type ->
+                type.name == version.type
+            }
+        }
     }
 
     override suspend fun getVersion(versionId: String): VersionManifest {

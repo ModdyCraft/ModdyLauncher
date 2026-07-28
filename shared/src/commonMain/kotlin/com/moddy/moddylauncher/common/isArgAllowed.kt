@@ -1,6 +1,9 @@
 package com.moddy.moddylauncher.common
 
 import com.moddy.moddylauncher.LauncherPaths
+import com.moddy.moddylauncher.appName
+import com.moddy.moddylauncher.appVersion
+import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
@@ -99,22 +102,24 @@ fun compareVersions(
 fun resolveArgument(
     argument: String,
     versionId: String,
-    assetIndex: String
+    assetIndex: String,
+    versionType: String,
+    userData: UserData
 ): String {
 
     val variables = mapOf(
-        "\${auth_player_name}" to "Moddy",
+        "\${auth_player_name}" to userData.username,
         "\${version_name}" to versionId,
         "\${game_directory}" to LauncherPaths.newProfile(versionId).root.absolutePath,
         "\${assets_root}" to LauncherPaths.assets.absolutePath.toString(),
         "\${assets_index_name}" to assetIndex,
-        "\${auth_uuid}" to "TU-UUID",
-        "\${auth_access_token}" to "TU-ACCESS-TOKEN",
-        "\${clientid}" to "TU-CLIENT-ID",
-        "\${auth_xuid}" to "TU-XUID",
-        "\${version_type}" to "release",
-        "\${resolution_width}" to "548",
-        "\${resolution_height}" to "408",
+        "\${auth_uuid}" to userData.uuid,
+        "\${auth_access_token}" to "0",
+        "\${clientid}" to versionId,
+        "\${auth_xuid}" to "0",
+        "\${version_type}" to versionType,
+        "\${resolution_width}" to "DEFAULT",
+        "\${resolution_height}" to "DEFAULT",
     )
 
     return variables[argument] ?: argument
@@ -122,14 +127,12 @@ fun resolveArgument(
 
 fun resolveJVMArgument(
     argument: String,
-    launcherName: String,
-    launcherVersion: String
 ): String {
 
     val variables = mapOf(
         "\${natives_directory}" to LauncherPaths.nativeDirectory.absolutePath,
-        "\${launcher_name}" to launcherName,
-        "\${launcher_version}" to launcherVersion
+        "\${launcher_name}" to appName,
+        "\${launcher_version}" to appVersion
     )
 
     var result = argument

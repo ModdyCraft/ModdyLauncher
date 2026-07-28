@@ -1,0 +1,16 @@
+CREATE TABLE User(
+    id INTEGER NOT NULL PRIMARY KEY ,
+    username TEXT NOT NULL,
+    uiid TEXT NOT NULL
+);
+
+insertOrReplaceUser:
+INSERT OR REPLACE INTO User(id, username, uiid)
+VALUES (1, ?, ?);
+
+getUser:
+SELECT * FROM User
+LIMIT 1;
+
+deleteUser:
+DELETE FROM User;

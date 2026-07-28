@@ -1,5 +1,6 @@
 This is a Kotlin Multiplatform project targeting Desktop (JVM).
 
+----
 # Moddy Launcher
 
 **Moddy Launcher** es un launcher de Minecraft de código abierto y gratuito, creado con la intención de ofrecer una
@@ -17,6 +18,13 @@ aprender, proponer mejoras y ayudar a construir una herramienta útil para la co
 Moddy Launcher todavía está en una etapa de desarrollo activo. Esto significa que pueden existir errores, problemas de
 compatibilidad o características que aún no estén implementadas.
 
+El proyecto se encuentra **en proceso de mejora constante**. Actualmente, **Moddy Launcher es desarrollado por un único
+desarrollador**, por lo que el progreso y la implementación de nuevas funcionalidades pueden depender del tiempo
+disponible.
+
+Por este motivo, estamos buscando el apoyo de **otros desarrolladores de la comunidad** que quieran colaborar, aportar
+ideas y ayudar a que Moddy Launcher pueda crecer y convertirse en un launcher cada vez más completo y estable.
+
 Si encuentras un problema, tienes una idea para mejorar el proyecto o quieres aportar nuevas funcionalidades, eres
 bienvenido a participar.
 
@@ -28,10 +36,37 @@ Las contribuciones pueden incluir:
 * 📚 Crear y mejorar la documentación.
 * 📝 Mejorar los comentarios y explicaciones del código.
 * 🔍 Revisar el código y proponer mejoras.
-* 💡 Compartir ideas y sugerencias para el futuro del proyecto.
+* 💡 Compartir ideas y sugerencias para el futuro.
+* 🌍 Ayudar con traducciones y accesibilidad.
+* 🧪 Probar nuevas versiones y reportar problemas.
 
 **Si eres desarrollador, te invitamos a revisar el código, contribuir y ayudarnos a construir una versión cada vez mejor
 de Moddy Launcher.**
+
+Cualquier aporte, ya sea grande o pequeño, puede marcar una diferencia importante para el proyecto.
+
+## ⚙️ Configuración de Java
+
+Para poder ejecutar tu versión de Minecraft correctamente, actualmente es necesario configurar manualmente la ruta de
+Java instalada en tu ordenador.
+
+Para hacerlo, debes dirigirte al siguiente
+archivo: [MinecraftLauncherImpl.kt](./shared/src/commonMain/kotlin/com/moddy/moddylauncher/data/local/MinecraftLauncherImpl.kt)
+
+```kotlin
+// Cambiar por un ejecutable real en tu Dispositivo 
+command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.1\\bin\\javaw.exe")
+```
+
+Dentro de este archivo, debes localizar la **línea 54** y modificar la ruta de Java por la ruta correspondiente a la
+instalación de Java que tienes en tu PC.
+
+Por ejemplo, deberás reemplazar la ruta existente por la ubicación donde tengas instalado Java en tu sistema.
+
+> **Nota:** La configuración de la ruta de Java se encuentra actualmente en proceso de mejora. En futuras versiones se
+> espera facilitar este proceso para que los usuarios no tengan que modificar manualmente el código fuente.
+
+Una vez configurada correctamente la ruta de Java, podrás intentar ejecutar tu versión de Minecraft desde el launcher.
 
 ## 💖 Un proyecto hecho por la comunidad
 
@@ -42,6 +77,14 @@ ofrecer una alternativa desarrollada de forma abierta.
 No pretendemos que nadie obtenga beneficios económicos a costa del trabajo de otros. Nuestro objetivo es que el proyecto
 pueda crecer gracias a las contribuciones voluntarias de la comunidad y al trabajo de quienes quieran formar parte de
 él.
+
+Actualmente, el proyecto es mantenido por **un único desarrollador**, por lo que cualquier ayuda de la comunidad es
+especialmente importante.
+
+Si eres desarrollador y te interesa el proyecto, puedes ayudar contribuyendo con código, revisando el proyecto,
+proponiendo mejoras o colaborando en el desarrollo de nuevas funcionalidades.
+
+**Estamos buscando desarrolladores que quieran unirse a la comunidad y ayudar a construir el futuro de Moddy Launcher.**
 
 ## ⚠️ Descargo de responsabilidad
 
@@ -82,18 +125,32 @@ nuevas versiones o simplemente compartiendo ideas.
 
 Toda contribución, por pequeña que sea, puede ayudar al crecimiento del proyecto.
 
+Actualmente, **el proyecto está siendo desarrollado por una sola persona**, pero la intención es formar una comunidad de
+colaboradores que puedan aportar sus conocimientos y experiencia para mejorar Moddy Launcher.
+
+Si eres desarrollador, estudiante o simplemente tienes interés en aprender y colaborar en un proyecto de código abierto,
+**te invitamos a formar parte de esta iniciativa**.
+
 ## 📌 Estado actual
 
-> **Moddy Launcher está actualmente en desarrollo.**
+> **Moddy Launcher está actualmente en desarrollo y en proceso de mejora.**
 >
-> Algunas funciones pueden no estar terminadas y pueden existir errores o problemas inesperados. El proyecto seguirá
-> evolucionando gracias al trabajo de sus colaboradores y de la comunidad.
+> Algunas funciones pueden no estar terminadas y pueden existir errores o problemas inesperados. La configuración de
+> algunas partes del launcher, como la ruta de Java, todavía requiere ajustes manuales.
+>
+> El proyecto seguirá evolucionando gracias al trabajo de sus colaboradores y de la comunidad.
 
-Si quieres contribuir, mejorar el código o ayudar a documentar el proyecto, **¡eres bienvenido!**
+Actualmente, el proyecto cuenta con **un único desarrollador**, por lo que estamos buscando el apoyo de **otros
+desarrolladores de la comunidad** que quieran contribuir, aportar nuevas ideas y ayudarnos a mejorar el launcher.
 
----
+Si quieres contribuir, mejorar el código, solucionar errores, implementar nuevas funcionalidades o ayudar a documentar
+el proyecto, **¡eres bienvenido!**
+
+**Juntos podemos hacer que Moddy Launcher siga creciendo y mejorando.** 🚀
 
 **Moddy Launcher — Código abierto, gratuito y hecho por la comunidad.**
+
+----
 
 * [/shared](./shared/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
@@ -112,6 +169,7 @@ options:
 - Desktop app:
     - Hot reload: `./gradlew :desktopApp:hotRun --auto`
     - Standard run: `./gradlew :desktopApp:run`
+  - Executable: `.gradlew :desktopApp:createDistributable`
 
 ### Running tests
 

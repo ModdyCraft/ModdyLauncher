@@ -5,6 +5,8 @@ import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
+import com.moddy.moddylauncher.database.user.UserDTO
+import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
@@ -16,7 +18,9 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.File
 
-class MinecraftLauncherImpl : MinecraftLauncher {
+class MinecraftLauncherImpl(
+    private val database: UserDTO,
+) : MinecraftLauncher {
     override suspend fun launch(version: VersionManifest) {
 
         val defaultUserJvm = buildDefaultJvmArgs(
@@ -28,7 +32,8 @@ class MinecraftLauncherImpl : MinecraftLauncher {
         val gameArgs = buildGameArgs(
             args = version.arguments.game,
             assetIndex = version.assetIndex.id,
-            versionId = version.id
+            versionId = version.id,
+            versionType = version.type,
         )
 
         val jvmArgs = buildJVMArgs(
@@ -44,6 +49,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
 
         val command = mutableListOf<String>()
 
+        // Cambiar por un ejecutable real en tu Dispositivo
         command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.1\\bin\\javaw.exe")
 
         command.addAll(defaultUserJvm)
@@ -81,7 +87,17 @@ class MinecraftLauncherImpl : MinecraftLauncher {
         return newList
     }
 
-    override fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String> {
+    override fun buildGameArgs(
+        args: List<JsonElement>,
+        assetIndex: String,
+        versionId: String,
+        versionType: String
+    ): List<String> {
+
+        val user = database.getUser()
+
+        print("USER: $user")
+
         val ignoredArgs = setOf(
             "--demo",
             "--quickPlayPath",
@@ -121,7 +137,9 @@ class MinecraftLauncherImpl : MinecraftLauncher {
                         resolveArgument(
                             it,
                             versionId = versionId,
-                            assetIndex = assetIndex
+                            assetIndex = assetIndex,
+                            userData = user ?: UserData("NO NAMED"),
+                            versionType = versionType
                         )
                     }
             }
@@ -170,9 +188,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
             .filterNot { it in ignoredArgs }
             .map { argument ->
                 resolveJVMArgument(
-                    argument,
-                    launcherName = launcherName,
-                    launcherVersion = launcherVersion,
+                    argument
                 )
             }
     }

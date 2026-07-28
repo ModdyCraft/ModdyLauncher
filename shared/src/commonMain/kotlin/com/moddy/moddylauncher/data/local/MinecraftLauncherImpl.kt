@@ -5,6 +5,7 @@ import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
+import com.moddy.moddylauncher.domain.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
@@ -121,7 +122,8 @@ class MinecraftLauncherImpl : MinecraftLauncher {
                         resolveArgument(
                             it,
                             versionId = versionId,
-                            assetIndex = assetIndex
+                            assetIndex = assetIndex,
+                            userData = UserData("")
                         )
                     }
             }

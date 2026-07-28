@@ -42,8 +42,8 @@ kotlin {
 
 sqldelight {
     databases {
-        create("UserDatabase") {
-            packageName.set("com.moddy.moddylauncher.cache.user")
+        create("AppDatabase") {
+            packageName.set("com.moddy.moddylauncher.cache")
         }
     }
 }

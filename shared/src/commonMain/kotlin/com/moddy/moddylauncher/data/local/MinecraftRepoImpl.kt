@@ -26,10 +26,6 @@ class MinecraftRepoImpl(
     override suspend fun playVersion(versionId: String) {
         val version = api.getVersion(versionId)
 
-        // Descargando Manifest
-        val manifest = json.encodeToString(version)
-        File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
-
         // Descargando Cliente
         downloader.downloadFile(version.downloads.client.url, File(LauncherPaths.versions, "${version.id}.jar"))
 
@@ -46,6 +42,10 @@ class MinecraftRepoImpl(
 
         // Descargando Assets
         downloadAssets(version)
+
+        // Descargando Manifest
+        val manifest = json.encodeToString(version)
+        File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
 
         execute(version)
     }

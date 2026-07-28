@@ -102,25 +102,7 @@ class MinecraftRepoImpl(
         return allowed
     }
 
-    private fun execute(version: VersionManifest) {
-        val xdxd = launcher.buildDefaultJvmArgs(version.arguments.defaultUserJvm)
-
-        // print(xdxd)
-
-        val odods = launcher.buildGameArgs(
-            version.arguments.game,
-            assetIndex = version.id,
-            versionId = version.assets
-        )
-
-        // print(odods)
-
-        val asdasd = launcher.buildClasspath(versionId = version.id, libraries = version.libraries)
-
-        print(asdasd)
-
-        val asdcc = launcher.buildJVMArgs(version.arguments.jvm)
-
-        // print(asdcc)
+    private suspend fun execute(version: VersionManifest) {
+        launcher.launch(version)
     }
 }

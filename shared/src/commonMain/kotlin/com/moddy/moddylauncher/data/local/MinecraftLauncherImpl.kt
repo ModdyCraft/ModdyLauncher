@@ -7,6 +7,9 @@ import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
+import com.moddy.moddylauncher.domain.version.VersionManifest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -14,8 +17,50 @@ import kotlinx.serialization.json.JsonPrimitive
 import java.io.File
 
 class MinecraftLauncherImpl : MinecraftLauncher {
-    override fun launch() {
-        TODO("Not yet implemented")
+    override suspend fun launch(version: VersionManifest) {
+
+        val defaultUserJvm = buildDefaultJvmArgs(
+            args = version.arguments.defaultUserJvm,
+            minMem = MemoryRam.G2,
+            maxMem = MemoryRam.G4
+        )
+
+        val gameArgs = buildGameArgs(
+            args = version.arguments.game,
+            assetIndex = version.assets,
+            versionId = version.id
+        )
+
+        val jvmArgs = buildJVMArgs(
+            args = version.arguments.jvm,
+            launcherName = "ModdyLauncher",
+            launcherVersion = "1.0.0"
+        )
+
+        val classPath = buildClasspath(
+            libraries = version.libraries,
+            versionId = version.id
+        )
+
+        val command = mutableListOf<String>()
+
+        command.add(LauncherPaths.javaw.absolutePath)
+
+        command.addAll(defaultUserJvm)
+        command.addAll(gameArgs)
+        command.addAll(jvmArgs)
+
+        command.add("-cp")
+        command.add(classPath)
+
+        command.add(version.mainClass)
+
+        withContext(Dispatchers.IO) {
+            ProcessBuilder(command)
+                .directory(LauncherPaths.newProfile(version.id).root)
+                .inheritIO()
+                .start()
+        }
     }
 
     override fun buildDefaultJvmArgs(args: List<DefaultUserJvm>, minMem: MemoryRam, maxMem: MemoryRam): List<String> {
@@ -79,7 +124,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
             }
     }
 
-    override fun buildJVMArgs(args: List<JsonElement>): List<String> {
+    override fun buildJVMArgs(args: List<JsonElement>, launcherName: String, launcherVersion: String): List<String> {
 
         val ignoredArgs = setOf(
             "-cp",
@@ -123,8 +168,8 @@ class MinecraftLauncherImpl : MinecraftLauncher {
             .map { argument ->
                 resolveJVMArgument(
                     argument,
-                    launcherName = "TODO()",
-                    launcherVersion = "TODO()",
+                    launcherName = launcherName,
+                    launcherVersion = launcherVersion,
                 )
             }
     }

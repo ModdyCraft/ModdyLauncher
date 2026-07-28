@@ -24,6 +24,11 @@ object LauncherPaths {
     }
 
     /**
+     * Ejecutable de java
+     */
+    val javaw = File(System.getProperty("java.home"), "bin/javaw.exe")
+
+    /**
      * Carpeta del launcher
      */
     val launcher = File(baseDir, ".ModdyLauncher")
@@ -90,6 +95,9 @@ object LauncherPaths {
 
     // Representa la estructura de un Perfil específico
     class ProfileDirectory(root: File) {
+
+        val root = root
+
         val dataPacks = File(root, "datapacks")
         val crashReports = File(root, "crash-reports")
         val mods = File(root, "mods")

@@ -3,11 +3,12 @@ package com.moddy.moddylauncher.data.local
 import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
+import com.moddy.moddylauncher.domain.version.VersionManifest
 import kotlinx.serialization.json.JsonElement
 
 interface MinecraftLauncher {
 
-    fun launch()
+    suspend fun launch(version: VersionManifest)
 
     fun buildDefaultJvmArgs(
         args: List<DefaultUserJvm>,
@@ -17,7 +18,7 @@ interface MinecraftLauncher {
 
     fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String>
 
-    fun buildJVMArgs(args: List<JsonElement>): List<String>
+    fun buildJVMArgs(args: List<JsonElement>, launcherName: String, launcherVersion: String): List<String>
 
     fun buildClasspath(libraries: List<Library>, versionId: String): String
 }

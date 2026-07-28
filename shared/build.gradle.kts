@@ -32,6 +32,8 @@ kotlin {
 
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqlite.jdbc)
+
+            implementation(libs.navigation.compose)
         }
 
         commonTest.dependencies {

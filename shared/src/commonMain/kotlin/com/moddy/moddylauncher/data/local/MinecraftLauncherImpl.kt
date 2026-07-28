@@ -5,8 +5,8 @@ import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
+import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
-import com.moddy.moddylauncher.database.user.UserDatabase
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
@@ -19,7 +19,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import java.io.File
 
 class MinecraftLauncherImpl(
-    private val database: UserDatabase,
+    private val database: UserDTO,
 ) : MinecraftLauncher {
     override suspend fun launch(version: VersionManifest) {
 
@@ -87,7 +87,7 @@ class MinecraftLauncherImpl(
 
     override fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String> {
 
-        val user = database.getuser()
+        val user = database.getUser()
 
         val ignoredArgs = setOf(
             "--demo",

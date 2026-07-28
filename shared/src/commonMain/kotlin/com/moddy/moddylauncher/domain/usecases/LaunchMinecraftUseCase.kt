@@ -1,18 +1,18 @@
 package com.moddy.moddylauncher.domain.usecases
 
 import com.moddy.moddylauncher.data.local.MinecraftRepository
+import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
-import com.moddy.moddylauncher.database.user.UserDatabase
 
 class LaunchMinecraftUseCase(
-    private val database: UserDatabase,
+    private val database: UserDTO,
     private val launcher: MinecraftRepository,
 ) {
     suspend operator fun invoke(version: String, userName: String) {
 
         val userName = userName.replace(" ", "_")
 
-        val user = database.getuser()
+        val user = database.getUser()
 
         if (user == null) {
             database.createuser(UserData(userName))

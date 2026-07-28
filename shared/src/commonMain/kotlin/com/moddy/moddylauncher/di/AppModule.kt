@@ -16,6 +16,8 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val AppModule = module {
@@ -60,7 +62,7 @@ val AppModule = module {
 
     single<MinecraftRepository> { MinecraftRepoImpl(get(), get(), get(), get()) }
 
-    single<MinecraftLauncher> { MinecraftLauncherImpl() }
+    singleOf(::MinecraftLauncherImpl) bind MinecraftLauncher::class
 
     single<DownloadRepository> { DownloadRepoImpl(get()) }
 }

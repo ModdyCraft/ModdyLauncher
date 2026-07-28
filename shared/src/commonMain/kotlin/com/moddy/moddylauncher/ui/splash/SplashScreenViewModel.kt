@@ -38,6 +38,7 @@ class SplashScreenViewModel(
                 print("[Login] Usuario ${user.username} bienvenido")
                 print("[Login] Redirigiendo a pantalla de inicio")
                 _navTo.value = Screen.Home
+                return@launch
             }
             print("[Login] Usuario no existente")
             print("[Login] Redirigiendo a pantalla de Autenticación")

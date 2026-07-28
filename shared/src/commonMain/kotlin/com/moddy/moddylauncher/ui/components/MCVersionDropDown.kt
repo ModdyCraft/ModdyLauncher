@@ -3,13 +3,16 @@ package com.moddy.moddylauncher.ui.components
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.moddy.moddylauncher.domain.model.MCVersion
+import com.moddy.moddylauncher.icons.download
+import com.moddy.moddylauncher.icons.download_done
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownField(
-    options: List<String>,
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit,
+fun MCVersionDropDown(
+    options: List<MCVersion>,
+    selectedOption: MCVersion?,
+    onOptionSelected: (MCVersion) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -22,7 +25,7 @@ fun DropdownField(
         modifier = modifier
     ) {
         OutlinedTextField(
-            value = selectedOption,
+            value = selectedOption?.version ?: "",
             onValueChange = {},
             readOnly = true,
             trailingIcon = {
@@ -39,10 +42,16 @@ fun DropdownField(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(option.version) },
                     onClick = {
                         onOptionSelected(option)
                         expanded = false
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = if (option.isInstalled) download_done else download,
+                            contentDescription = null
+                        )
                     }
                 )
             }

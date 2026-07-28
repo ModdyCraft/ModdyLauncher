@@ -2,6 +2,7 @@ package com.moddy.moddylauncher.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moddy.moddylauncher.domain.model.MCVersion
 import com.moddy.moddylauncher.domain.usecases.GetMinecraftListVersionsUseCase
 import com.moddy.moddylauncher.domain.usecases.LaunchMinecraftUseCase
 import com.moddy.moddylauncher.domain.usecases.VersionType
@@ -35,7 +36,7 @@ class HomeScreenViewModel(
         }
     }
 
-    fun setVersionSelected(version: String) {
+    fun setVersionSelected(version: MCVersion) {
         _uiState.value = _uiState.value.copy(
             versionSelected = version,
         )

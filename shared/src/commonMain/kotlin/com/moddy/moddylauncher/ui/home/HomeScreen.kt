@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.moddy.moddylauncher.ui.components.DropdownField
+import com.moddy.moddylauncher.ui.components.MCVersionDropDown
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -24,7 +24,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        DropdownField(
+        MCVersionDropDown(
             options = uiState.versions,
             selectedOption = uiState.versionSelected,
             onOptionSelected = viewModel::setVersionSelected

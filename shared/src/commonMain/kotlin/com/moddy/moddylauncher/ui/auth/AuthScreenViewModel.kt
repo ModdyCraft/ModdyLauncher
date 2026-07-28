@@ -12,11 +12,12 @@ class AuthScreenViewModel(
     private val _uiState = MutableStateFlow(AuthScreenUiState())
     val uiState: StateFlow<AuthScreenUiState> = _uiState
 
-    fun createUser() {
+    fun createUser(completed: () -> Unit) {
         createUser(uiState.value.username.replace(" ", "_".take(12)))
         _uiState.value = _uiState.value.copy(
             loading = true
         )
+        completed()
     }
 
     fun setUsername(username: String) {

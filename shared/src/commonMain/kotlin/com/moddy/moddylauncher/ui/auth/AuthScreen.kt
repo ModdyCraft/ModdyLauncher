@@ -14,6 +14,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AuthScreen(
+    navTo: () -> Unit,
     viewModel: AuthScreenViewModel = koinViewModel(),
 ) {
 
@@ -31,7 +32,11 @@ fun AuthScreen(
         )
         Spacer(Modifier.height(16.dp))
         Button(
-            onClick = viewModel::createUser,
+            onClick = {
+                viewModel.createUser(
+                    completed = navTo
+                )
+            },
             enabled = !uiState.loading
         ) {
             Text("CREAR USUARIO")

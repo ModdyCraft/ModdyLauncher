@@ -26,7 +26,7 @@ fun NavScreen() {
         }
 
         composable(Screen.Login.route) {
-            AuthScreen()
+            AuthScreen(navTo = { navController.navigate(Screen.Home.route) })
         }
     }
 }

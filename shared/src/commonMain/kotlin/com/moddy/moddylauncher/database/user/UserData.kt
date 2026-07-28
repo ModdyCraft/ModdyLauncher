@@ -1,4 +1,4 @@
-package com.moddy.moddylauncher.domain.user
+package com.moddy.moddylauncher.database.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

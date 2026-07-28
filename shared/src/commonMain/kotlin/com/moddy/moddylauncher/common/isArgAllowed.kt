@@ -1,7 +1,7 @@
 package com.moddy.moddylauncher.common
 
 import com.moddy.moddylauncher.LauncherPaths
-import com.moddy.moddylauncher.domain.user.UserData
+import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray

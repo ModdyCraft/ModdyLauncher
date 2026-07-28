@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RuleX(
     val action: String,
-    val os: OsX
+    val os: OsX? = null,
 )

@@ -94,7 +94,7 @@ class MinecraftRepoImpl(
 
         for ((action, os) in library.rules) {
 
-            if (os.name == currentOs) {
+            if (os?.name == currentOs) {
                 allowed = action == "allow"
             }
         }

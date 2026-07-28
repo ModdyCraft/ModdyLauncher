@@ -2,7 +2,6 @@ package com.moddy.moddylauncher.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,12 +24,6 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        OutlinedTextField(
-            value = uiState.userName,
-            onValueChange = viewModel::setUserName,
-            label = { Text("Nickname") },
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         DropdownField(
             options = uiState.versions,
             selectedOption = uiState.versionSelected,

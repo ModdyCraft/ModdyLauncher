@@ -4,6 +4,7 @@ import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.domain.manifest.Latest
 import com.moddy.moddylauncher.domain.manifest.ManifestV2
 import com.moddy.moddylauncher.domain.manifest.Version
+import com.moddy.moddylauncher.domain.usecases.VersionType
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -22,8 +23,12 @@ class MinecraftApiImpl(
         return getManifest().latest
     }
 
-    override suspend fun getVersions(): List<Version> {
-        return getManifest().versions
+    override suspend fun getVersions(vararg filter: VersionType): List<Version> {
+        return getManifest().versions.filter { version ->
+            filter.any { type ->
+                type.name == version.type
+            }
+        }
     }
 
     override suspend fun getVersion(versionId: String): VersionManifest {

@@ -32,7 +32,7 @@ class HomeScreenViewModel(
 
     fun launch() {
         viewModelScope.launch {
-            launcher(uiState.value.versionSelected)
+            uiState.value.versionSelected?.let { launcher(it.version) }
         }
     }
 

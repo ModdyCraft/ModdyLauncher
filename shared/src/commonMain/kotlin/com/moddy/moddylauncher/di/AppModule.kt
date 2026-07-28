@@ -15,11 +15,13 @@ import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.io.IOException
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@OptIn(ExperimentalSerializationApi::class)
 val AppModule = module {
 
     single {
@@ -27,11 +29,10 @@ val AppModule = module {
 
             install(HttpCache)
             install(ContentNegotiation) {
-                json(
+                jsonIo(
                     Json {
-                        prettyPrint = true
-                        isLenient = true
                         ignoreUnknownKeys = true
+                        isLenient = true
                     }
                 )
             }

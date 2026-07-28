@@ -44,6 +44,11 @@ object LauncherPaths {
     val assets = File(meta, "assets")
 
     /**
+     * Carpeta de los natives de minecraft
+     */
+    val nativeDirectory = File(meta, "native_directory")
+
+    /**
      * Carpeta donde se guardan los manifest de los assets
      */
     val index = File(assets, "index")

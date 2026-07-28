@@ -4,6 +4,7 @@ import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
+import com.moddy.moddylauncher.common.resolveJVMArgument
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import kotlinx.serialization.json.JsonArray
@@ -79,16 +80,62 @@ class MinecraftLauncherImpl : MinecraftLauncher {
     }
 
     override fun buildJVMArgs(args: List<JsonElement>): List<String> {
-        TODO("Not yet implemented")
+
+        val ignoredArgs = setOf(
+            "-cp",
+            "\${classpath}"
+        )
+
+        return args
+            .filter { element ->
+                when (element) {
+                    is JsonPrimitive -> true
+                    is JsonObject -> isArgAllowed(element)
+                    else -> false
+                }
+            }
+            .flatMap { element ->
+                when (element) {
+                    is JsonPrimitive -> {
+                        listOf(element.content)
+                    }
+
+                    is JsonObject -> {
+                        when (val value = element["value"]) {
+                            is JsonPrimitive -> {
+                                listOf(value.content)
+                            }
+
+                            is JsonArray -> {
+                                value
+                                    .filterIsInstance<JsonPrimitive>()
+                                    .map { it.content }
+                            }
+
+                            else -> emptyList()
+                        }
+                    }
+
+                    else -> emptyList()
+                }
+            }
+            .filterNot { it in ignoredArgs }
+            .map { argument ->
+                resolveJVMArgument(
+                    argument,
+                    launcherName = "TODO()",
+                    launcherVersion = "TODO()",
+                )
+            }
     }
 
     override fun buildClasspath(libraries: List<Library>, versionId: String): String {
         val libraries = libraries
             .map { library ->
-                File(LauncherPaths.libraries, library.downloads.artifact.path)
+                File(LauncherPaths.libraries, library.downloads.artifact.path.replace("\\", "/"))
             }
 
-        val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath
+        val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath.replace("\\", "/")
 
         return (libraries + clientJar)
             .joinToString(File.pathSeparator)

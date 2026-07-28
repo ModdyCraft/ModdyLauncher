@@ -119,3 +119,27 @@ fun resolveArgument(
 
     return variables[argument] ?: argument
 }
+
+fun resolveJVMArgument(
+    argument: String,
+    launcherName: String,
+    launcherVersion: String
+): String {
+
+    val variables = mapOf(
+        "\${natives_directory}" to LauncherPaths.nativeDirectory.absolutePath.replace("\\", "/"),
+        "\${launcher_name}" to launcherName,
+        "\${launcher_version}" to launcherVersion
+    )
+
+    var result = argument
+
+    for ((key, value) in variables) {
+        if (result.contains(key)) {
+            result = result.replace(key, value)
+            break
+        }
+    }
+
+    return result
+}

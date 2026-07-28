@@ -118,5 +118,9 @@ class MinecraftRepoImpl(
         val asdasd = launcher.buildClasspath(versionId = version.id, libraries = version.libraries)
 
         print(asdasd)
+
+        val asdcc = launcher.buildJVMArgs(version.arguments.jvm)
+
+        // print(asdcc)
     }
 }

@@ -169,7 +169,7 @@ options:
 - Desktop app:
     - Hot reload: `./gradlew :desktopApp:hotRun --auto`
     - Standard run: `./gradlew :desktopApp:run`
-  - Executable: `.gradlew :desktopApp:createDistributable`
+  - Executable: `./gradlew :desktopApp:createDistributable`
 
 ### Running tests
 

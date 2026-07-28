@@ -11,7 +11,7 @@ class HomeScreenViewModel(
 
     fun launch() {
         viewModelScope.launch {
-            minecraft.playVersion("26.2")
+            minecraft.playVersion("1.21.11")
         }
     }
 

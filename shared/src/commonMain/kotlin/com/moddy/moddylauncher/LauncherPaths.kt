@@ -56,7 +56,7 @@ object LauncherPaths {
     /**
      * Carpeta donde se guardan los manifest de los assets
      */
-    val index = File(assets, "index")
+    val index = File(assets, "indexes")
 
     /**
      * Carpeta donde se guardan los assets de los assets

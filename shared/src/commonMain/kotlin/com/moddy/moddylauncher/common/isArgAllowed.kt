@@ -105,8 +105,8 @@ fun resolveArgument(
     val variables = mapOf(
         "\${auth_player_name}" to "Moddy",
         "\${version_name}" to versionId,
-        "\${game_directory}" to LauncherPaths.versions.absolutePath,
-        "\${assets_root}" to LauncherPaths.assets.absolutePath,
+        "\${game_directory}" to LauncherPaths.newProfile(versionId).root.absolutePath,
+        "\${assets_root}" to LauncherPaths.assets.absolutePath.toString(),
         "\${assets_index_name}" to assetIndex,
         "\${auth_uuid}" to "TU-UUID",
         "\${auth_access_token}" to "TU-ACCESS-TOKEN",
@@ -127,7 +127,7 @@ fun resolveJVMArgument(
 ): String {
 
     val variables = mapOf(
-        "\${natives_directory}" to LauncherPaths.nativeDirectory.absolutePath.replace("\\", "/"),
+        "\${natives_directory}" to LauncherPaths.nativeDirectory.absolutePath,
         "\${launcher_name}" to launcherName,
         "\${launcher_version}" to launcherVersion
     )

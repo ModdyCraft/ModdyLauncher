@@ -27,7 +27,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
 
         val gameArgs = buildGameArgs(
             args = version.arguments.game,
-            assetIndex = version.assets,
+            assetIndex = version.assetIndex.id,
             versionId = version.id
         )
 
@@ -44,16 +44,19 @@ class MinecraftLauncherImpl : MinecraftLauncher {
 
         val command = mutableListOf<String>()
 
-        command.add(LauncherPaths.javaw.absolutePath)
+        command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.1\\bin\\javaw.exe")
 
         command.addAll(defaultUserJvm)
-        command.addAll(gameArgs)
         command.addAll(jvmArgs)
 
         command.add("-cp")
         command.add(classPath)
 
         command.add(version.mainClass)
+
+        command.addAll(gameArgs)
+
+        println(command)
 
         withContext(Dispatchers.IO) {
             ProcessBuilder(command)
@@ -177,10 +180,10 @@ class MinecraftLauncherImpl : MinecraftLauncher {
     override fun buildClasspath(libraries: List<Library>, versionId: String): String {
         val libraries = libraries
             .map { library ->
-                File(LauncherPaths.libraries, library.downloads.artifact.path.replace("\\", "/"))
+                File(LauncherPaths.libraries, library.downloads.artifact.path)
             }
 
-        val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath.replace("\\", "/")
+        val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath
 
         return (libraries + clientJar)
             .joinToString(File.pathSeparator)

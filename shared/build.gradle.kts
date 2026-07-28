@@ -32,6 +32,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.driver)
         }
 
         commonTest.dependencies {

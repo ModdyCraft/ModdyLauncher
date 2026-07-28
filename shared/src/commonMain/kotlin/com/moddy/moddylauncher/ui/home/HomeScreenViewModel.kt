@@ -2,8 +2,8 @@ package com.moddy.moddylauncher.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moddy.moddylauncher.data.local.MinecraftRepository
 import com.moddy.moddylauncher.domain.usecases.GetMinecraftListVersionsUseCase
+import com.moddy.moddylauncher.domain.usecases.LaunchMinecraftUseCase
 import com.moddy.moddylauncher.domain.usecases.VersionType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
     private val versions: GetMinecraftListVersionsUseCase,
-    private val minecraft: MinecraftRepository
+    private val launcher: LaunchMinecraftUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeScreenUiState())
@@ -31,7 +31,7 @@ class HomeScreenViewModel(
 
     fun launch() {
         viewModelScope.launch {
-            minecraft.playVersion("1.21.11")
+            launcher(uiState.value.versionSelected, uiState.value.userName)
         }
     }
 

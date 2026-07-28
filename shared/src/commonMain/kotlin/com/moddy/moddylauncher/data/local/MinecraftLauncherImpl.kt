@@ -6,6 +6,7 @@ import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
 import com.moddy.moddylauncher.database.user.UserData
+import com.moddy.moddylauncher.database.user.UserDatabase
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
@@ -17,7 +18,9 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import java.io.File
 
-class MinecraftLauncherImpl : MinecraftLauncher {
+class MinecraftLauncherImpl(
+    private val database: UserDatabase,
+) : MinecraftLauncher {
     override suspend fun launch(version: VersionManifest) {
 
         val defaultUserJvm = buildDefaultJvmArgs(
@@ -83,6 +86,9 @@ class MinecraftLauncherImpl : MinecraftLauncher {
     }
 
     override fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String> {
+
+        val user = database.getuser()
+
         val ignoredArgs = setOf(
             "--demo",
             "--quickPlayPath",
@@ -123,7 +129,7 @@ class MinecraftLauncherImpl : MinecraftLauncher {
                             it,
                             versionId = versionId,
                             assetIndex = assetIndex,
-                            userData = UserData("")
+                            userData = user ?: UserData("NO NAMED")
                         )
                     }
             }

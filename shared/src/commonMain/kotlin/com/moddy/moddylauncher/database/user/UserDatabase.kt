@@ -3,7 +3,7 @@ package com.moddy.moddylauncher.database.user
 import app.cash.sqldelight.db.SqlDriver
 import com.moddy.moddylauncher.cache.AppDatabase
 
-internal class UserDatabase(driver: SqlDriver) {
+class UserDatabase(driver: SqlDriver) {
     private val databse = AppDatabase(driver)
     private val dbQuery = databse.userQueries
 
@@ -11,10 +11,10 @@ internal class UserDatabase(driver: SqlDriver) {
         dbQuery.insertOrReplaceUser(user.username, user.uuid)
     }
 
-    internal fun getuser(): UserData {
-        val user = dbQuery.getUser().executeAsOne()
+    internal fun getuser(): UserData? {
+        val user = dbQuery.getUser().executeAsOneOrNull()
 
-        return UserData(user.username, user.uiid)
+        return user?.let { UserData(it.username, it.uiid) }
     }
 
     internal fun deletUser() {

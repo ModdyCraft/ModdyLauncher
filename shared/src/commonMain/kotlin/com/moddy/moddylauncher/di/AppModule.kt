@@ -29,9 +29,8 @@ val AppModule = module {
             install(ContentNegotiation) {
                 json(
                     Json {
-                        prettyPrint = true
-                        isLenient = true
                         ignoreUnknownKeys = true
+                        isLenient = true
                     }
                 )
             }

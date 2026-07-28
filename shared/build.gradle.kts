@@ -23,20 +23,25 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
             implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.content.negociation)
+            implementation(libs.ktor.client.content.negotiation)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.sqldelight.runtime)
-            implementation(libs.sqldelight.driver)
+            implementation(libs.sqlite.jdbc)
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
+
+            implementation(libs.sqldelight.driver)
         }
     }
 }

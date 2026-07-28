@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 data class Arguments(
     @SerialName("default-user-jvm")
-    val defaultUserJvm: List<DefaultUserJvm>,
+    val defaultUserJvm: List<DefaultUserJvm> = emptyList(),
     val game: List<JsonElement>,
     val jvm: List<JsonElement>
 )

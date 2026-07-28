@@ -32,7 +32,8 @@ class MinecraftLauncherImpl(
         val gameArgs = buildGameArgs(
             args = version.arguments.game,
             assetIndex = version.assetIndex.id,
-            versionId = version.id
+            versionId = version.id,
+            versionType = version.type,
         )
 
         val jvmArgs = buildJVMArgs(
@@ -85,7 +86,12 @@ class MinecraftLauncherImpl(
         return newList
     }
 
-    override fun buildGameArgs(args: List<JsonElement>, assetIndex: String, versionId: String): List<String> {
+    override fun buildGameArgs(
+        args: List<JsonElement>,
+        assetIndex: String,
+        versionId: String,
+        versionType: String
+    ): List<String> {
 
         val user = database.getUser()
 
@@ -131,7 +137,8 @@ class MinecraftLauncherImpl(
                             it,
                             versionId = versionId,
                             assetIndex = assetIndex,
-                            userData = user ?: UserData("NO NAMED")
+                            userData = user ?: UserData("NO NAMED"),
+                            versionType = versionType
                         )
                     }
             }
@@ -180,9 +187,7 @@ class MinecraftLauncherImpl(
             .filterNot { it in ignoredArgs }
             .map { argument ->
                 resolveJVMArgument(
-                    argument,
-                    launcherName = launcherName,
-                    launcherVersion = launcherVersion,
+                    argument
                 )
             }
     }

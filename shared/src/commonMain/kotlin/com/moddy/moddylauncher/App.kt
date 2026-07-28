@@ -12,3 +12,6 @@ fun App() {
         HomeScreen()
     }
 }
+
+val appVersion = "1.0.1-beta"
+val appName = "ModdyLauncher"

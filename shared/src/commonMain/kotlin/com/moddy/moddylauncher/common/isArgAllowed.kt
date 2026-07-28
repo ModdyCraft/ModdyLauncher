@@ -1,6 +1,8 @@
 package com.moddy.moddylauncher.common
 
 import com.moddy.moddylauncher.LauncherPaths
+import com.moddy.moddylauncher.appName
+import com.moddy.moddylauncher.appVersion
 import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import kotlinx.serialization.json.JsonObject
@@ -101,6 +103,7 @@ fun resolveArgument(
     argument: String,
     versionId: String,
     assetIndex: String,
+    versionType: String,
     userData: UserData
 ): String {
 
@@ -114,7 +117,7 @@ fun resolveArgument(
         "\${auth_access_token}" to "0",
         "\${clientid}" to versionId,
         "\${auth_xuid}" to "0",
-        "\${version_type}" to "release",
+        "\${version_type}" to versionType,
         "\${resolution_width}" to "DEFAULT",
         "\${resolution_height}" to "DEFAULT",
     )
@@ -124,14 +127,12 @@ fun resolveArgument(
 
 fun resolveJVMArgument(
     argument: String,
-    launcherName: String,
-    launcherVersion: String
 ): String {
 
     val variables = mapOf(
         "\${natives_directory}" to LauncherPaths.nativeDirectory.absolutePath,
-        "\${launcher_name}" to launcherName,
-        "\${launcher_version}" to launcherVersion
+        "\${launcher_name}" to appName,
+        "\${launcher_version}" to appVersion
     )
 
     var result = argument

@@ -49,6 +49,7 @@ class MinecraftLauncherImpl(
 
         val command = mutableListOf<String>()
 
+        // Cambiar por un ejecutable real en tu Dispositivo
         command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.1\\bin\\javaw.exe")
 
         command.addAll(defaultUserJvm)

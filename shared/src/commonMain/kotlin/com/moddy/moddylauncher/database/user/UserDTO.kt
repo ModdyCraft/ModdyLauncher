@@ -1,9 +1,11 @@
 package com.moddy.moddylauncher.database.user
 
-import app.cash.sqldelight.db.SqlDriver
 import com.moddy.moddylauncher.cache.AppDatabase
+import com.moddy.moddylauncher.database.DatabaseDriverFactory
 
-class UserDTO(driver: SqlDriver) {
+class UserDTO(driverFactory: DatabaseDriverFactory) {
+
+    private val driver = driverFactory.createDriver()
     private val databse = AppDatabase(driver)
     private val dbQuery = databse.userQueries
 

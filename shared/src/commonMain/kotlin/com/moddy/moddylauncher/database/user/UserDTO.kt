@@ -9,6 +9,7 @@ class UserDTO(driver: SqlDriver) {
 
     internal fun createuser(user: UserData) {
         dbQuery.insertOrReplaceUser(user.username, user.uuid)
+        println("inserting user ${user}")
     }
 
     internal fun getUser(): UserData? {

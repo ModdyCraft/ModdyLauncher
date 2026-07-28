@@ -4,7 +4,8 @@ import java.io.File
 
 object LauncherPaths {
 
-    private val os = System.getProperty("os.name").lowercase()
+    val os = System.getProperty("os.name").lowercase()
+    val osVersion = System.getProperty("os.version")
 
     // CORRECCIÓN: os.contains() es más seguro que un "=" exacto,
     // ya que System.getProperty("os.name") suele devolver "Windows 11", "Mac OS X", etc.
@@ -22,21 +23,81 @@ object LauncherPaths {
         }
     }
 
+    /**
+     * Ejecutable de java
+     */
+    val javaw = File(System.getProperty("java.home"), "bin/javaw.exe")
+
+    /**
+     * Carpeta del launcher
+     */
     val launcher = File(baseDir, ".ModdyLauncher")
+
+    /**
+     * Carpeta de logs del launcher
+     */
     val launcherLogs = File(launcher, "logs")
+
+    /**
+     * Carpeta de archivos para el juego
+     */
     val meta = File(launcher, "meta")
 
+    /**
+     * Carpeta de los assets del juego
+     */
     val assets = File(meta, "assets")
+
+    /**
+     * Carpeta de los natives de minecraft
+     */
+    val nativeDirectory = File(meta, "native_directory")
+
+    /**
+     * Carpeta donde se guardan los manifest de los assets
+     */
+    val index = File(assets, "indexes")
+
+    /**
+     * Carpeta donde se guardan los assets de los assets
+     */
+    val objects = File(assets, "objects")
+
+    /**
+     * Carpeta de versiones de java
+     */
     val javaVersions = File(meta, "java_versions")
+
+    /**
+     * Carpeta de dependencias del juego
+     */
     val libraries = File(meta, "libraries")
+
+    /**
+     * Carpeta de logs de configuracion
+     */
     val logConfigs = File(meta, "log_configs")
+
+    /**
+     * Carpeta de dependencias nativas del juego
+     */
     val natives = File(meta, "natives")
+
+    /**
+     * Carpeta de versiones del juego
+     */
     val versions = File(meta, "versions")
 
+    /**
+     * Carpeta de perfiles creados
+     */
     val profiles = File(launcher, "profiles")
 
     // Representa la estructura de un Perfil específico
-    class ProfileDirectory(val root: File) {
+    class ProfileDirectory(root: File) {
+
+        val root = root
+
         val dataPacks = File(root, "datapacks")
         val crashReports = File(root, "crash-reports")
         val mods = File(root, "mods")
@@ -80,7 +141,9 @@ object LauncherPaths {
             logConfigs,
             natives,
             versions,
-            profiles
+            profiles,
+            index,
+            objects
         )
         baseFolders.forEach { if (!it.exists()) it.mkdirs() }
     }

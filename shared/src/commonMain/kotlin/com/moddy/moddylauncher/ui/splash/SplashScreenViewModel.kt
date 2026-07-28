@@ -2,6 +2,7 @@ package com.moddy.moddylauncher.ui.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moddy.moddylauncher.domain.usecases.DownloadManifestUseCase
 import com.moddy.moddylauncher.domain.usecases.GetUserUseCase
 import com.moddy.moddylauncher.ui.navigation.Screen
 import kotlinx.coroutines.delay
@@ -12,6 +13,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class SplashScreenViewModel(
     private val user: GetUserUseCase,
+    private val downloadManifest: DownloadManifestUseCase,
 ) : ViewModel() {
 
     private val _consola = MutableStateFlow("")
@@ -24,6 +26,11 @@ class SplashScreenViewModel(
         viewModelScope.launch {
             print("Cargando Launcher ...")
             print("Descargando Manifest ...")
+            downloadManifest()
+            print("Descarga completada")
+            print("----")
+            print("[AUTHENTICATION VERIFIER]")
+            print("----")
             print("[Login] Comprobando si existe un usuario ...")
             val user = user()
             if (user != null) {

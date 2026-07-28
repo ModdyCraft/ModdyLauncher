@@ -15,8 +15,16 @@ import java.io.File
 class MinecraftApiImpl(
     val client: HttpClient,
 ) : MinecraftApi {
+
+    private var manifest: ManifestV2? = null
+
     override suspend fun getManifest(): ManifestV2 {
-        return client.get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json").body()
+        return manifest ?: client
+            .get("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
+            .body<ManifestV2>()
+            .also {
+                manifest = it
+            }
     }
 
     override suspend fun getLatest(): Latest {

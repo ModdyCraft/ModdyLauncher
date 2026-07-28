@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moddy.moddylauncher.data.local.MinecraftRepository
 import com.moddy.moddylauncher.domain.usecases.GetMinecraftListVersionsUseCase
+import com.moddy.moddylauncher.domain.usecases.VersionType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class HomeScreenViewModel(
     init {
         viewModelScope.launch {
 
-            val versions = versions()
+            val versions = versions(VersionType.release)
 
             _uiState.value = _uiState.value.copy(
                 versions = versions,

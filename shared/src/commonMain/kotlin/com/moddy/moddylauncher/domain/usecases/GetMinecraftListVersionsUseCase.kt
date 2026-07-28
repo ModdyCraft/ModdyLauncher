@@ -6,7 +6,7 @@ class GetMinecraftListVersionsUseCase(
     private val api: MinecraftApi
 ) {
     suspend operator fun invoke(vararg filter: VersionType): List<String> {
-        return api.getVersions().map { it.id }
+        return api.getVersions(*filter).map { it.id }
     }
 }
 

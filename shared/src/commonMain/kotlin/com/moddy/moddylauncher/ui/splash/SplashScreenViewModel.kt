@@ -48,7 +48,7 @@ class SplashScreenViewModel(
 
     suspend fun print(text: String) {
         _consola.value += "\n $text"
-        delay(500.milliseconds)
+        delay(100.milliseconds)
     }
 
 }

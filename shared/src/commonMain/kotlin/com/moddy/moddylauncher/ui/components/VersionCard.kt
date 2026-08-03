@@ -1,30 +1,49 @@
 package com.moddy.moddylauncher.ui.components
 
-import androidx.compose.foundation.ContextMenuArea
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
+import com.moddy.moddylauncher.icons.play_arrow
 import moddylauncher.shared.generated.resources.INSTANCE_DEFAULT
 import moddylauncher.shared.generated.resources.Res
 import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VersionCard(
     onClick: () -> Unit = {}
 ) {
+
+    var playable by remember { mutableStateOf(false) }
+
     ContextMenuArea(
         items = {
-            listOf()
+            listOf(
+                ContextMenuItem("Play") {
+
+                },
+                ContextMenuItem("Edit Instance") {
+
+                },
+                ContextMenuItem("Delete Instance") {
+
+                }
+            )
         }
     ) {
         Box(
@@ -35,7 +54,15 @@ fun VersionCard(
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
+                .onPointerEvent(
+                    PointerEventType.Enter,
+                    onEvent = { playable = true },
+                )
+                .onPointerEvent(PointerEventType.Exit) { playable = false }
+                .pointerHoverIcon(
+                    icon = PointerIcon.Hand
+                ),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -43,7 +70,17 @@ fun VersionCard(
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
-            Text("VERSION IDENTIFIER", softWrap = true)
+            if (playable) {
+                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)))
+                Icon(
+                    imageVector = play_arrow,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(70.dp)
+                )
+            } else {
+                Text("VERSION IDENTIFIER", softWrap = true)
+            }
         }
     }
 }

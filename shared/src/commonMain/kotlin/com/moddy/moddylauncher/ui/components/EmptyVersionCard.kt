@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.ui.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -19,6 +20,7 @@ fun EmptyVersionCard(
 ) {
     Box(
         modifier = Modifier
+            .padding(12.dp)
             .size(150.dp)
             .border(
                 width = 1.dp,

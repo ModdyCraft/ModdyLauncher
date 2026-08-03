@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.ui.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.moddy.moddylauncher.icons.play_arrow
 import moddylauncher.shared.generated.resources.INSTANCE_DEFAULT
@@ -48,6 +50,7 @@ fun VersionCard(
     ) {
         Box(
             modifier = Modifier
+                .padding(12.dp)
                 .size(150.dp)
                 .border(
                     width = 1.dp,
@@ -68,7 +71,8 @@ fun VersionCard(
             Image(
                 painter = painterResource(resource = Res.drawable.INSTANCE_DEFAULT),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
             if (playable) {
                 Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)))

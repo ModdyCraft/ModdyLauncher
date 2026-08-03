@@ -2,6 +2,8 @@ package com.moddy.moddylauncher.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -81,9 +83,20 @@ fun HomeScreen(
             }
         }
         Spacer(Modifier.height(20.dp))
-        EmptyVersionCard(onClick = {})
-        VersionCard {
-
-        }
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 4.dp),
+            columns = GridCells.Adaptive(minSize = 150.dp),
+            content = {
+                item {
+                    EmptyVersionCard(
+                        onClick = {}
+                    )
+                }
+                items(5) {
+                    VersionCard()
+                }
+            }
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.moddy.moddylauncher.ui.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +14,9 @@ import androidx.compose.ui.unit.dp
 import com.moddy.moddylauncher.icons.add_2
 
 @Composable
-fun EmptyVersionCard() {
+fun EmptyVersionCard(
+    onClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .size(150.dp)
@@ -21,7 +24,8 @@ fun EmptyVersionCard() {
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(8.dp)
-            ),
+            )
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Icon(

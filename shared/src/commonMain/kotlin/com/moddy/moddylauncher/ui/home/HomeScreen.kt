@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.moddy.moddylauncher.ui.Orange
 import com.moddy.moddylauncher.ui.components.EmptyVersionCard
+import com.moddy.moddylauncher.ui.components.VersionCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -80,6 +81,9 @@ fun HomeScreen(
             }
         }
         Spacer(Modifier.height(20.dp))
-        EmptyVersionCard()
+        EmptyVersionCard(onClick = {})
+        VersionCard {
+
+        }
     }
 }

@@ -1,16 +1,20 @@
 package com.moddy.moddylauncher
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.moddy.moddylauncher.ui.instance.InstanceManagerScreen
+import com.moddy.moddylauncher.ui.ModdyLauncherTheme
+import com.moddy.moddylauncher.ui.home.HomeScreen
 
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    ModdyLauncherTheme {
         // NavScreen()
-        InstanceManagerScreen()
+        Surface(color = MaterialTheme.colorScheme.background) {
+            HomeScreen()
+        }
     }
 }
 

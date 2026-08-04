@@ -7,6 +7,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,6 +19,9 @@ import org.koin.compose.viewmodel.koinViewModel
 fun InstanceManagerScreen(
     viewModel: InstanceManagerViewModel = koinViewModel(),
 ) {
+
+    val uiState by viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
@@ -30,7 +35,7 @@ fun InstanceManagerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
-                    value = "ASD",
+                    value = uiState.instanceName,
                     onValueChange = {},
                     label = {
                         Text("Instance Name")
@@ -39,7 +44,7 @@ fun InstanceManagerScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    value = "ASD",
+                    value = uiState.instancePath,
                     onValueChange = {},
                     label = {
                         Text("Directory Path")
@@ -55,13 +60,13 @@ fun InstanceManagerScreen(
         // Filtros
         Row {
             OutlinedTextField(
-                value = "ASD",
+                value = uiState.versionFilter.name,
                 onValueChange = {},
                 modifier = Modifier.width(150.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
-                value = "ASD",
+                value = uiState.clientFilter.name,
                 onValueChange = {},
                 modifier = Modifier.width(150.dp),
             )
@@ -71,7 +76,7 @@ fun InstanceManagerScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = "26.2",
+            value = uiState.version,
             onValueChange = {},
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -80,7 +85,7 @@ fun InstanceManagerScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = "26.2",
+            value = uiState.javaExecutable,
             onValueChange = {},
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -89,7 +94,7 @@ fun InstanceManagerScreen(
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = "26.2",
+            value = uiState.JVMArgs,
             onValueChange = {},
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -102,19 +107,21 @@ fun InstanceManagerScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
-                value = "ASD",
+                value = uiState.height,
                 onValueChange = {},
                 modifier = Modifier.width(150.dp),
+                enabled = !uiState.fullWindow
             )
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
-                value = "ASD",
+                value = uiState.width,
                 onValueChange = {},
                 modifier = Modifier.width(150.dp),
+                enabled = !uiState.fullWindow
             )
             Spacer(Modifier.width(16.dp))
             Checkbox(
-                checked = false,
+                checked = uiState.fullWindow,
                 onCheckedChange = {},
             )
             Spacer(Modifier.width(2.dp))

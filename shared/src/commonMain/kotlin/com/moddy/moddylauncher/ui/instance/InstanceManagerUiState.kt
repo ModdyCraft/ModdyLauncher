@@ -8,7 +8,7 @@ data class InstanceManagerUiState(
     val instancePath: String = "",
     val versionFilter: VersionType = VersionType.release,
     val clientFilter: ClientType = ClientType.vanilla,
-    val version: String,
+    val version: String = "",
     val javaExecutable: String = "AUTOMATIC",
     val JVMArgs: String = "",
     val height: String = "",

@@ -6,14 +6,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.moddy.moddylauncher.ui.auth.AuthScreen
 import com.moddy.moddylauncher.ui.home.HomeScreen
+import com.moddy.moddylauncher.ui.instance.InstanceManagerScreen
 import com.moddy.moddylauncher.ui.splash.SplashScreen
 
 @Composable
-fun NavScreen() {
+fun NavScreen(
+    startDestination: String = Screen.Splash.route,
+) {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = Screen.Splash.route) {
+    NavHost(navController, startDestination = startDestination) {
 
         composable(Screen.Splash.route) {
             SplashScreen(
@@ -22,11 +25,21 @@ fun NavScreen() {
         }
 
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onClickEmptyCard = {
+                    navController.navigate(Screen.InstanceManager.route)
+                }
+            )
         }
 
         composable(Screen.Login.route) {
             AuthScreen(navTo = { navController.navigate(Screen.Home.route) })
+        }
+
+        composable(
+            Screen.InstanceManager.route
+        ) {
+            InstanceManagerScreen()
         }
     }
 }
@@ -34,5 +47,6 @@ fun NavScreen() {
 enum class Screen(val route: String) {
     Home("home"),
     Login("login"),
-    Splash("splash")
+    Splash("splash"),
+    InstanceManager("instance_manager")
 }

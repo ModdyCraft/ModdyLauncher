@@ -20,6 +20,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
+    onClickEmptyCard: () -> Unit,
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
     Column(
@@ -69,7 +70,7 @@ fun HomeScreen(
             content = {
                 item {
                     EmptyVersionCard(
-                        onClick = {}
+                        onClick = onClickEmptyCard
                     )
                 }
                 items(5) {

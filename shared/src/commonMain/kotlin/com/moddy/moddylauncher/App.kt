@@ -5,7 +5,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.moddy.moddylauncher.ui.ModdyLauncherTheme
-import com.moddy.moddylauncher.ui.home.HomeScreen
+import com.moddy.moddylauncher.ui.navigation.NavScreen
 
 @Composable
 @Preview
@@ -13,7 +13,7 @@ fun App() {
     ModdyLauncherTheme {
         // NavScreen()
         Surface(color = MaterialTheme.colorScheme.background) {
-            HomeScreen()
+            NavScreen()
         }
     }
 }

@@ -11,9 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun InstanceManagerScreen(
+    viewModel: InstanceManagerViewModel = koinViewModel(),
 ) {
     Column(
         modifier = Modifier.padding(16.dp)

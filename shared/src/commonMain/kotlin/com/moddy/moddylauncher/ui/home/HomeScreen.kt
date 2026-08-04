@@ -22,27 +22,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
-
-//    val uiState: HomeScreenUiState by viewModel.uiState.collectAsState()
-//
-//    Column(
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Center,
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        MCVersionDropDown(
-//            options = uiState.versions,
-//            selectedOption = uiState.versionSelected,
-//            onOptionSelected = viewModel::setVersionSelected
-//        )
-//        Spacer(modifier = Modifier.height(20.dp))
-//        OutlinedButton(
-//            onClick = viewModel::launch,
-//        ) {
-//            Text("PLAY")
-//        }
-//    }
-
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {

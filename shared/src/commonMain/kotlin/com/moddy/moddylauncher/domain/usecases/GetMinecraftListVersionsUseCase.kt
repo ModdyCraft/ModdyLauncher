@@ -24,3 +24,13 @@ enum class VersionType {
     release,
     old_beta
 }
+
+enum class ClientType {
+    vanilla,
+    forge,
+    neo_forge,
+    optifine,
+    fabric
+}
+
+enum class JavaExecutable

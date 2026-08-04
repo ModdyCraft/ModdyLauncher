@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import com.moddy.moddylauncher.icons.add_2
 
@@ -27,7 +29,8 @@ fun EmptyVersionCard(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(8.dp)
             )
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .pointerHoverIcon(PointerIcon.Hand),
         contentAlignment = Alignment.Center
     ) {
         Icon(

@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.moddy.moddylauncher.ui.components.DropDownMenuField
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -67,26 +68,26 @@ fun InstanceManagerScreen(
 
         // Filtros
         Row {
-            OutlinedTextField(
-                value = uiState.versionFilter.name,
-                onValueChange = {},
-                modifier = Modifier.width(150.dp),
+            DropDownMenuField(
+                options = uiState.versionFilters.map { it.name },
+                selected = { viewModel.setVersionFilter(uiState.versionFilters[it]) },
+                modifier = Modifier.width(150.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
                 value = uiState.clientFilter.name,
                 onValueChange = {},
                 modifier = Modifier.width(150.dp),
+                enabled = false,
             )
         }
 
         // Version
         Spacer(Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = uiState.version,
-            onValueChange = {},
-            singleLine = true,
+        DropDownMenuField(
+            options = uiState.versions,
+            selected = { viewModel.setVersion(uiState.versions[it]) },
             modifier = Modifier.fillMaxWidth()
         )
 

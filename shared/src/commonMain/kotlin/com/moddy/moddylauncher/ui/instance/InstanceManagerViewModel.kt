@@ -20,12 +20,16 @@ class InstanceManagerViewModel(
         viewModelScope.launch {
             val versions = versionList(uiState.value.versionFilter)
 
-            _uiState.value = uiState.value.copy(
-                versions = versions,
-                version = versions.first(),
-                instanceNamePlaceHolder = versions.first()
-            )
+            setNewUiState(versions)
         }
+    }
+
+    private fun setNewUiState(versions: List<String>) {
+        _uiState.value = uiState.value.copy(
+            versions = versions,
+            version = versions.first(),
+            instanceNamePlaceHolder = versions.first()
+        )
     }
 
     fun setInstanceName(name: String) {
@@ -40,6 +44,17 @@ class InstanceManagerViewModel(
         _uiState.value = uiState.value.copy(
             versionFilter = filter
         )
+
+        viewModelScope.launch {
+
+            val versions = versionList(uiState.value.versionFilter)
+
+            _uiState.value = uiState.value.copy(
+                versions = versions,
+                version = versions.first(),
+                instanceNamePlaceHolder = versions.first()
+            )
+        }
     }
 
     fun setVersionFilter(filter: ClientType) {

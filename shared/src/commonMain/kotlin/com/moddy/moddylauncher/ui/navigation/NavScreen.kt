@@ -39,7 +39,9 @@ fun NavScreen(
         composable(
             Screen.InstanceManager.route
         ) {
-            InstanceManagerScreen()
+            InstanceManagerScreen(
+                { navController.popBackStack() }
+            )
         }
     }
 }

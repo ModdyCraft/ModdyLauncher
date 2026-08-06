@@ -2,6 +2,7 @@ package com.moddy.moddylauncher.ui.instance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -12,11 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun InstanceManagerScreen(
+    onCancelPressed: () -> Unit,
     viewModel: InstanceManagerViewModel = koinViewModel(),
 ) {
 
@@ -36,7 +40,7 @@ fun InstanceManagerScreen(
             ) {
                 OutlinedTextField(
                     value = uiState.instanceName,
-                    onValueChange = {},
+                    onValueChange = viewModel::setInstanceName,
                     label = {
                         Text("Instance Name")
                     },
@@ -45,10 +49,11 @@ fun InstanceManagerScreen(
                 )
                 OutlinedTextField(
                     value = uiState.instancePath,
-                    onValueChange = {},
+                    onValueChange = viewModel::setInstanceFolder,
                     label = {
                         Text("Directory Path")
                     },
+                    enabled = false,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -108,21 +113,32 @@ fun InstanceManagerScreen(
         ) {
             OutlinedTextField(
                 value = uiState.height,
-                onValueChange = {},
+                onValueChange = viewModel::setWindowHeight,
                 modifier = Modifier.width(150.dp),
-                enabled = !uiState.fullWindow
+                enabled = !uiState.fullWindow,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
+                singleLine = true
             )
             Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
                 value = uiState.width,
-                onValueChange = {},
+                onValueChange = viewModel::setWindowWidth,
                 modifier = Modifier.width(150.dp),
-                enabled = !uiState.fullWindow
+                enabled = !uiState.fullWindow,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
+                singleLine = true,
+
             )
             Spacer(Modifier.width(16.dp))
             Checkbox(
                 checked = uiState.fullWindow,
-                onCheckedChange = {},
+                onCheckedChange = viewModel::toggleWindowFull,
             )
             Spacer(Modifier.width(2.dp))
             Text("Full Size")
@@ -136,7 +152,7 @@ fun InstanceManagerScreen(
             horizontalArrangement = Arrangement.End
         ) {
             OutlinedButton(
-                onClick = {}
+                onClick = onCancelPressed
             ) {
                 Text(text = "CANCEL")
             }

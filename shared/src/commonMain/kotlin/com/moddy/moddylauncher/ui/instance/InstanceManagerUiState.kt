@@ -4,14 +4,14 @@ import com.moddy.moddylauncher.domain.usecases.ClientType
 import com.moddy.moddylauncher.domain.usecases.VersionType
 
 data class InstanceManagerUiState(
-    val instanceName: String = "",
-    val instancePath: String = "",
+    val instanceName: String = "Default",
+    val instancePath: String = "Default",
     val versionFilter: VersionType = VersionType.release,
     val clientFilter: ClientType = ClientType.vanilla,
-    val version: String = "",
-    val javaExecutable: String = "AUTOMATIC",
+    val version: String = "Default",
+    val javaExecutable: String = "Default",
     val JVMArgs: String = "",
-    val height: String = "",
-    val width: String = "",
-    val fullWindow: Boolean = false,
+    val height: String = "854",
+    val width: String = "480",
+    val fullWindow: Boolean = true,
 )

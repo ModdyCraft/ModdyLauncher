@@ -38,12 +38,15 @@ fun InstanceManagerScreen(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                // Instance Name
                 OutlinedTextField(
                     value = uiState.instanceName,
                     onValueChange = viewModel::setInstanceName,
                     label = {
                         Text("Instance Name")
                     },
+                    placeholder = { Text(uiState.instanceNamePlaceHolder) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )

@@ -162,7 +162,7 @@ fun InstanceManagerScreen(
             }
             Spacer(Modifier.width(16.dp))
             OutlinedButton(
-                onClick = {}
+                onClick = { viewModel.onSavePressed() }
             ) {
                 Text(text = "SAVE")
             }

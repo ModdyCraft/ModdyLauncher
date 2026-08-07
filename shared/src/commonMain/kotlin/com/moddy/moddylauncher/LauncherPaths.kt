@@ -24,14 +24,19 @@ object LauncherPaths {
     }
 
     /**
-     * Ejecutable de java
-     */
-    val javaw = File(System.getProperty("java.home"), "bin/javaw.exe")
-
-    /**
      * Carpeta del launcher
      */
     val launcher = File(baseDir, ".ModdyLauncher")
+
+    /**
+     * Carpeta de los assets del juego
+     */
+    val javaJRE = File(launcher, "jre")
+
+    /**
+     * Ejecutable de java
+     */
+    val javaw = File(System.getProperty("java.home"), "bin/javaw.exe")
 
     /**
      * Carpeta de logs del launcher

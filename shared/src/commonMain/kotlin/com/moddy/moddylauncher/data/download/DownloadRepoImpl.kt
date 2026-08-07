@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.data.download
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -15,20 +16,33 @@ class DownloadRepoImpl(
     private val client: HttpClient,
 ) : DownloadRepository {
     override suspend fun downloadFile(url: String, destination: File) {
+        destination.parentFile?.mkdirs()
 
-        if (destination.exists()) return
+        println("Downloading $url")
 
-        destination.parentFile.mkdirs()
+        val tempFile = File(destination.parentFile, "${destination.name}.part")
 
-        println("Downloading ${destination.path}")
+        client.prepareGet(url).execute { response ->
 
-        val response = client.get(url)
+            println(response.status)
+            println(response.headers["Location"])
+            println(response.headers["Content-Type"])
+            println(response.headers["Content-Length"])
 
-        destination.outputStream().use { output ->
-            response.bodyAsChannel().copyTo(output)
+            if (!response.status.isSuccess()) {
+                error("Error descargando archivo (${response.status})")
+            }
+
+            tempFile.outputStream().buffered().use { output ->
+                response.bodyAsChannel().copyTo(output)
+            }
         }
 
-        println("Downloaded ${destination.path}")
+        if (destination.exists()) {
+            destination.delete()
+        }
+
+        tempFile.renameTo(destination)
     }
 
     override suspend fun downloadFilesInParallel(

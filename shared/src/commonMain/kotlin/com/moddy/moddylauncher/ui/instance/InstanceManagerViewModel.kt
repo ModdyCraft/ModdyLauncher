@@ -2,6 +2,7 @@ package com.moddy.moddylauncher.ui.instance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moddy.moddylauncher.data.local.AdoptiumRepo
 import com.moddy.moddylauncher.domain.usecases.ClientType
 import com.moddy.moddylauncher.domain.usecases.GetMinecraftListVersionsUseCase
 import com.moddy.moddylauncher.domain.usecases.VersionType
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class InstanceManagerViewModel(
-    private val versionList: GetMinecraftListVersionsUseCase
+    private val versionList: GetMinecraftListVersionsUseCase,
+    private val adoptiumRepo: AdoptiumRepo
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InstanceManagerUiState())
@@ -89,5 +91,11 @@ class InstanceManagerViewModel(
         _uiState.value = uiState.value.copy(
             fullWindow = enabled
         )
+    }
+
+    fun onSavePressed() {
+        viewModelScope.launch {
+            adoptiumRepo.downloadAdoptium("8")
+        }
     }
 }

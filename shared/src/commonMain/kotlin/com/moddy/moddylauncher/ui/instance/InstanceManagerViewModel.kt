@@ -95,7 +95,7 @@ class InstanceManagerViewModel(
 
     fun onSavePressed() {
         viewModelScope.launch {
-            adoptiumRepo.downloadAdoptium("8")
+            adoptiumRepo.downloadAdoptium("25")
         }
     }
 }

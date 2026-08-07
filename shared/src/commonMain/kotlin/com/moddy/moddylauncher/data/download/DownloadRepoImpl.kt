@@ -23,12 +23,6 @@ class DownloadRepoImpl(
         val tempFile = File(destination.parentFile, "${destination.name}.part")
 
         client.prepareGet(url).execute { response ->
-
-            println(response.status)
-            println(response.headers["Location"])
-            println(response.headers["Content-Type"])
-            println(response.headers["Content-Length"])
-
             if (!response.status.isSuccess()) {
                 error("Error descargando archivo (${response.status})")
             }

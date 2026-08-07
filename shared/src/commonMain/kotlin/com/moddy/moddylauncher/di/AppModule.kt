@@ -37,7 +37,7 @@ val AppModule = module {
             install(HttpTimeout) {
                 requestTimeoutMillis = 90_000
                 connectTimeoutMillis = 30_000
-                socketTimeoutMillis = 90_000
+                socketTimeoutMillis = 300_000
             }
 
             install(HttpRequestRetry) {

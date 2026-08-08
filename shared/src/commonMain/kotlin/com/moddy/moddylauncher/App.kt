@@ -11,7 +11,6 @@ import com.moddy.moddylauncher.ui.navigation.NavScreen
 @Preview
 fun App() {
     ModdyLauncherTheme {
-        // NavScreen()
         Surface(color = MaterialTheme.colorScheme.background) {
             NavScreen()
         }

@@ -11,13 +11,11 @@ import com.moddy.moddylauncher.ui.instance.InstanceManagerScreen
 import com.moddy.moddylauncher.ui.splash.SplashScreen
 
 @Composable
-fun NavScreen(
-    startDestination: Any = Home,
-) {
+fun NavScreen() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = startDestination) {
+    NavHost(navController, startDestination = Home) {
 
         composable<Splash> {
             SplashScreen(

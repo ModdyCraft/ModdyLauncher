@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Home(
-    val reload: Boolean
+    val reload: Boolean? = null,
 )
 
 @Serializable
@@ -15,5 +15,5 @@ class Auth
 
 @Serializable
 data class InstanceManager(
-    val id: Int
+    val id: Int? = null
 )

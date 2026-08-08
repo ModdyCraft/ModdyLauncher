@@ -79,11 +79,6 @@ object LauncherPaths {
     val logConfigs = File(meta, "log_configs")
 
     /**
-     * Carpeta de dependencias nativas del juego
-     */
-    val natives = File(meta, "natives")
-
-    /**
      * Carpeta de versiones del juego
      */
     val versions = File(meta, "versions")
@@ -138,7 +133,6 @@ object LauncherPaths {
             assets,
             libraries,
             logConfigs,
-            natives,
             versions,
             profiles,
             index,

@@ -37,8 +37,7 @@ class MinecraftRepoImpl(
             } else {
                 library.downloads.artifact?.let {
                     Pair(
-                        it.url,
-                        File(LauncherPaths.libraries, library.downloads.artifact.path)
+                        it.url, File(LauncherPaths.libraries, library.downloads.artifact.path)
                     )
                 }
             }
@@ -92,19 +91,26 @@ class MinecraftRepoImpl(
     }
 
     private fun isLibraryAllowed(library: Library): Boolean {
-        if (library.rules == null) return true
+        val rules = library.rules ?: return true
 
         val currentOs = when {
-            LauncherPaths.os.contains("win") -> "windows"
-            LauncherPaths.os.contains("mac") -> "osx"
+            LauncherPaths.os.contains("win", ignoreCase = true) -> "windows"
+            LauncherPaths.os.contains("mac", ignoreCase = true) -> "osx"
             else -> "linux"
         }
 
         var allowed = false
 
-        for ((action, os) in library.rules) {
+        for ((action, os) in rules) {
 
-            if (os?.name == currentOs) {
+            // Regla global: aplica independientemente del sistema operativo
+            if (os == null) {
+                allowed = action == "allow"
+                continue
+            }
+
+            // Regla específica para un sistema operativo
+            if (os.name == currentOs) {
                 allowed = action == "allow"
             }
         }
@@ -113,10 +119,7 @@ class MinecraftRepoImpl(
     }
 
     private suspend fun execute(
-        version: VersionManifest,
-        instance: InstanceData,
-        jre: File,
-        libraries: List<Pair<String, File>>
+        version: VersionManifest, instance: InstanceData, jre: File, libraries: List<Pair<String, File>>
     ) {
         launcher.launch(version, instance, jre = jre, libraries = libraries)
     }

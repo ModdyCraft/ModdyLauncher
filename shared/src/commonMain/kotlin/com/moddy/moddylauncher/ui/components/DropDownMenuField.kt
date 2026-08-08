@@ -33,6 +33,7 @@ fun DropDownMenuField(
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded)
             },
+            singleLine = true,
             modifier = modifier.menuAnchor(type = ExposedDropdownMenuAnchorType.PrimaryNotEditable)
         )
 

@@ -72,6 +72,7 @@ class ConsoleDialogViewModel(
         }
 
         process = null
+        _text.value = ""
 
         super.onCleared()
     }

@@ -12,9 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogWindow
+import androidx.compose.ui.window.rememberDialogState
 import com.moddy.moddylauncher.ui.ModdyLauncherTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -54,7 +56,13 @@ fun ConsoleDialog(
 
     DialogWindow(
         onCloseRequest = onCloseRequest,
-        title = "Minecraft Console"
+        title = "Minecraft Console",
+        state = rememberDialogState(
+            size = DpSize(
+                height = 650.dp,
+                width = 1000.dp
+            )
+        )
     ) {
         ModdyLauncherTheme {
             Surface(

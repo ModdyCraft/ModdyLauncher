@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moddy.moddylauncher.domain.usecases.DownloadManifestUseCase
 import com.moddy.moddylauncher.domain.usecases.GetUserUseCase
-import com.moddy.moddylauncher.ui.navigation.Screen
+import com.moddy.moddylauncher.ui.navigation.Auth
+import com.moddy.moddylauncher.ui.navigation.Home
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +20,7 @@ class SplashScreenViewModel(
     private val _consola = MutableStateFlow("")
     val consola = _consola.asStateFlow()
 
-    private val _navTo = MutableStateFlow<Screen?>(null)
+    private val _navTo = MutableStateFlow<Any?>(null)
     val navTo = _navTo.asStateFlow()
 
     init {
@@ -37,12 +38,12 @@ class SplashScreenViewModel(
                 print("[Login] Usuario encontrado")
                 print("[Login] Usuario ${user.username} bienvenido")
                 print("[Login] Redirigiendo a pantalla de inicio")
-                _navTo.value = Screen.Home
+                _navTo.value = Home
                 return@launch
             }
             print("[Login] Usuario no existente")
             print("[Login] Redirigiendo a pantalla de Autenticación")
-            _navTo.value = Screen.Login
+            _navTo.value = Auth
         }
     }
 

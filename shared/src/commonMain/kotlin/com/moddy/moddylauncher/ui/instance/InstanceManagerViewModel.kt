@@ -41,6 +41,29 @@ class InstanceManagerViewModel(
         }
     }
 
+    fun loadInstance(id: Int?) {
+        viewModelScope.launch {
+
+            val instance = id?.let { instanceManager.getInstanceByID(it) }
+
+            instance?.let { instance ->
+
+                val versionFilter = uiState.value.versionFilters.find { it.name == instance.versionFilter }
+                _uiState.value = uiState.value.copy(
+                    instanceName = instance.instanceName,
+                    width = instance.width.toString(),
+                    height = instance.height.toString(),
+                    clientFilter = uiState.value.clientFilter,
+                    versionFilter = versionFilter ?: VersionType.release,
+                    version = instance.version,
+                    javaExecutable = instance.javaExec,
+                    JVMArgs = instance.JVMARGS,
+                    fullWindow = instance.fullWindow,
+                )
+            }
+        }
+    }
+
     private fun setNewUiState(versions: List<String>) {
         _uiState.value = uiState.value.copy(
             versions = versions,

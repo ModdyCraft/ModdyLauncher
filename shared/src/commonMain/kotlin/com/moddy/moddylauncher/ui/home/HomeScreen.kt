@@ -27,6 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreen(
     navController: NavController,
     onClickEmptyCard: () -> Unit,
+    onEditVersionCard: (Int) -> Unit,
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -102,7 +103,8 @@ fun HomeScreen(
                             instance = instance,
                             onDeletePressed = {
                                 viewModel.deleteInstance(instance.id)
-                            }
+                            },
+                            onEditPressed = { onEditVersionCard(instance.id) },
                         ) {
 
                         }

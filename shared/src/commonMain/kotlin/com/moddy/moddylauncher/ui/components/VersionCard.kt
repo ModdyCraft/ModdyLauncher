@@ -31,6 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 fun VersionCard(
     instance: InstanceData,
     onDeletePressed: () -> Unit,
+    onEditPressed: () -> Unit,
     onClick: () -> Unit = {},
 ) {
 
@@ -43,7 +44,7 @@ fun VersionCard(
 
                 },
                 ContextMenuItem("Edit Instance") {
-
+                    onEditPressed()
                 },
                 ContextMenuItem("Delete Instance") {
                     onDeletePressed()

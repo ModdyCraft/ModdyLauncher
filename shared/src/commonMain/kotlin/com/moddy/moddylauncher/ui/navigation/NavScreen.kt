@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.moddy.moddylauncher.ui.auth.AuthScreen
 import com.moddy.moddylauncher.ui.home.HomeScreen
 import com.moddy.moddylauncher.ui.instance.InstanceManagerScreen
@@ -11,35 +12,39 @@ import com.moddy.moddylauncher.ui.splash.SplashScreen
 
 @Composable
 fun NavScreen(
-    startDestination: String = Screen.Splash.route,
+    startDestination: Any = Home,
 ) {
 
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = startDestination) {
 
-        composable(Screen.Splash.route) {
+        composable<Splash> {
             SplashScreen(
-                navTo = { navController.navigate(it.route) }
+                navTo = { navController.navigate(it) },
             )
         }
 
-        composable(Screen.Home.route) {
+        composable<Home> {
             HomeScreen(
                 navController = navController,
                 onClickEmptyCard = {
-                    navController.navigate(Screen.InstanceManager.route)
+                    navController.navigate(InstanceManager)
+                },
+                onEditVersionCard = { id ->
+                    navController.navigate(InstanceManager(id))
                 }
             )
         }
 
-        composable(Screen.Login.route) {
-            AuthScreen(navTo = { navController.navigate(Screen.Home.route) })
+        composable<Auth> {
+            AuthScreen(navTo = { navController.navigate(Home) })
         }
 
-        composable(
-            Screen.InstanceManager.route
-        ) {
+        composable<InstanceManager> { navBackStackEntry ->
+
+            val instance = navBackStackEntry.toRoute<InstanceManager>()
+
             InstanceManagerScreen(
                 {
                     navController.previousBackStackEntry
@@ -47,15 +52,9 @@ fun NavScreen(
                         ?.set("reload", true)
 
                     navController.popBackStack()
-                }
+                },
+                instance = instance.id,
             )
         }
     }
-}
-
-enum class Screen(val route: String) {
-    Home("home"),
-    Login("login"),
-    Splash("splash"),
-    InstanceManager("instance_manager")
 }

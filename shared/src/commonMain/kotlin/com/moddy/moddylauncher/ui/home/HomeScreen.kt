@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -21,6 +18,7 @@ import androidx.navigation.NavController
 import com.moddy.moddylauncher.ui.Orange
 import com.moddy.moddylauncher.ui.components.EmptyVersionCard
 import com.moddy.moddylauncher.ui.components.VersionCard
+import com.moddy.moddylauncher.ui.dialogs.console.ConsoleDialog
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -31,6 +29,8 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    var showConsoleDialog by remember { mutableStateOf(false) }
 
     val reload = navController.currentBackStackEntry
         ?.savedStateHandle
@@ -105,9 +105,13 @@ fun HomeScreen(
                                 viewModel.deleteInstance(instance.id)
                             },
                             onEditPressed = { onEditVersionCard(instance.id) },
-                        ) {
-                            viewModel.onPlay(instance)
-                        }
+                        ) { showConsoleDialog = true }
+
+                        ConsoleDialog(
+                            onCloseRequest = { showConsoleDialog = false },
+                            visible = showConsoleDialog,
+                            instanceId = instance.id
+                        )
                     }
                 }
             }

@@ -13,8 +13,8 @@ CREATE TABLE Instance (
 );
 
 insertInstance:
-INSERT INTO Instance(id, instanceName, versionFilter, version, directory, JVMARGS, width, height, fullWindow, javaExecutable, clienteFIlter)
-VALUES (id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Instance(instanceName, versionFilter, version, directory, JVMARGS, width, height, fullWindow, javaExecutable, clienteFIlter)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateInstance:
 UPDATE Instance

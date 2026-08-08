@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.moddy.moddylauncher.ui.Orange
 import com.moddy.moddylauncher.ui.components.EmptyVersionCard
 import com.moddy.moddylauncher.ui.components.VersionCard
@@ -23,10 +25,26 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
+    navController: NavController,
     onClickEmptyCard: () -> Unit,
     viewModel: HomeScreenViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val reload = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getStateFlow("reload", false)
+        ?.collectAsState()
+
+    LaunchedEffect(reload?.value) {
+        if (reload?.value == true) {
+            viewModel.loadInstances()
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("reload", false)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -81,7 +99,10 @@ fun HomeScreen(
                 uiState.instances?.let { list ->
                     items(list) { instance ->
                         VersionCard(
-                            instance = instance
+                            instance = instance,
+                            onDeletePressed = {
+                                viewModel.deleteInstance(instance.id)
+                            }
                         ) {
 
                         }

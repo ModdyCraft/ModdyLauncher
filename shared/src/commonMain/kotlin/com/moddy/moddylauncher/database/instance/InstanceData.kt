@@ -3,7 +3,7 @@ package com.moddy.moddylauncher.database.instance
 import com.moddy.moddylauncher.cache.Instance
 
 data class InstanceData(
-    val id: Long = 0,
+    val id: Int = 0,
     val instanceName: String,
     val versionFilter: String,
     val clienteFilter: String,
@@ -17,7 +17,7 @@ data class InstanceData(
 ) {
     fun toInstance(): Instance {
         return Instance(
-            id = id,
+            id = id.toLong(),
             instanceName = instanceName,
             versionFilter = versionFilter,
             directory = directory,
@@ -34,7 +34,7 @@ data class InstanceData(
 
 fun Instance.toData(): InstanceData {
     return InstanceData(
-        id = this.id,
+        id = this.id.toInt(),
         instanceName = this.instanceName,
         versionFilter = this.versionFilter,
         directory = this.directory,

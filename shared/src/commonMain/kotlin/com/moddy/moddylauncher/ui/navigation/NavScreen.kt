@@ -26,6 +26,7 @@ fun NavScreen(
 
         composable(Screen.Home.route) {
             HomeScreen(
+                navController = navController,
                 onClickEmptyCard = {
                     navController.navigate(Screen.InstanceManager.route)
                 }
@@ -40,7 +41,13 @@ fun NavScreen(
             Screen.InstanceManager.route
         ) {
             InstanceManagerScreen(
-                { navController.popBackStack() }
+                {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("reload", true)
+
+                    navController.popBackStack()
+                }
             )
         }
     }

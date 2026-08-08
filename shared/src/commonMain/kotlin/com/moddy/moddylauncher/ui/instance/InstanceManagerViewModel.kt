@@ -126,7 +126,7 @@ class InstanceManagerViewModel(
         viewModelScope.launch {
 
             val instance = InstanceData(
-                instanceName = uiState.value.instanceName,
+                instanceName = uiState.value.instanceName.ifEmpty { uiState.value.instanceNamePlaceHolder },
                 versionFilter = uiState.value.versionFilter.name,
                 version = uiState.value.version,
                 JVMARGS = uiState.value.JVMArgs,

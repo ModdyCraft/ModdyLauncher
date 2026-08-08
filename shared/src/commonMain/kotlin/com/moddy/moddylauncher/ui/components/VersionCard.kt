@@ -30,7 +30,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun VersionCard(
     instance: InstanceData,
-    onClick: () -> Unit = {}
+    onDeletePressed: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
 
     var playable by remember { mutableStateOf(false) }
@@ -45,7 +46,7 @@ fun VersionCard(
 
                 },
                 ContextMenuItem("Delete Instance") {
-
+                    onDeletePressed()
                 }
             )
         }

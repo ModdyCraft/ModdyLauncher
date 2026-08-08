@@ -18,9 +18,15 @@ class HomeScreenViewModel(
     val uiState: StateFlow<HomeScreenUiState> = _uiState
 
     init {
-        _uiState.value = uiState.value.copy(
-            instances = instanceManager.getInstances()
-        )
+        loadInstances()
+    }
+
+    fun loadInstances() {
+        viewModelScope.launch {
+            _uiState.value = uiState.value.copy(
+                instances = instanceManager.getInstances()
+            )
+        }
     }
 
     fun launch() {
@@ -39,6 +45,11 @@ class HomeScreenViewModel(
         _uiState.value = _uiState.value.copy(
             userName = userName
         )
+    }
+
+    fun deleteInstance(id: Int) {
+        instanceManager.deleteInstance(id)
+        loadInstances()
     }
 
 }

@@ -188,6 +188,8 @@ class InstanceManagerViewModel(
                 )
 
                 instanceManager.updateInstance(instance)
+
+                onFinished()
             }
         }
     }

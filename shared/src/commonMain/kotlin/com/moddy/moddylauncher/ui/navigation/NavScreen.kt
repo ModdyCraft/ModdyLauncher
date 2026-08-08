@@ -27,7 +27,7 @@ fun NavScreen() {
             HomeScreen(
                 navController = navController,
                 onClickEmptyCard = {
-                    navController.navigate(InstanceManager)
+                    navController.navigate(InstanceManager())
                 },
                 onEditVersionCard = { id ->
                     navController.navigate(InstanceManager(id))

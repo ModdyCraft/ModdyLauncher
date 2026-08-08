@@ -13,5 +13,5 @@ object Auth
 
 @Serializable
 data class InstanceManager(
-    val id: Int? = null
+    val id: Int? = null,
 )

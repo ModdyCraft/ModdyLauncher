@@ -25,6 +25,8 @@ class InstanceManagerViewModel(
     private var versionsA: List<Version> = emptyList()
     private var versionsB: List<String> = emptyList()
 
+    private var instanceG: InstanceData? = null
+
     init {
         viewModelScope.launch {
             val listJre = adoptiumList()!!.map { it.toString() }.toMutableList()
@@ -44,9 +46,13 @@ class InstanceManagerViewModel(
     fun loadInstance(id: Int?) {
         viewModelScope.launch {
 
+            instanceG = null
+
             val instance = id?.let { instanceManager.getInstanceByID(it) }
 
             instance?.let { instance ->
+
+                instanceG = instance
 
                 val versionFilter = uiState.value.versionFilters.find { it.name == instance.versionFilter }
                 _uiState.value = uiState.value.copy(
@@ -148,25 +154,41 @@ class InstanceManagerViewModel(
     ) {
         viewModelScope.launch {
 
-            val instance = InstanceData(
-                instanceName = uiState.value.instanceName.ifEmpty { uiState.value.instanceNamePlaceHolder },
-                versionFilter = uiState.value.versionFilter.name,
-                version = uiState.value.version,
-                JVMARGS = uiState.value.JVMArgs,
-                width = uiState.value.width.toLong(),
-                height = uiState.value.height.toLong(),
-                fullWindow = uiState.value.fullWindow,
-                clienteFilter = uiState.value.clientFilter.name,
-                javaExec = uiState.value.javaExecutable,
-            )
+            if (instanceG == null) {
+                val instance = InstanceData(
+                    instanceName = uiState.value.instanceName.ifEmpty { uiState.value.instanceNamePlaceHolder },
+                    versionFilter = uiState.value.versionFilter.name,
+                    version = uiState.value.version,
+                    JVMARGS = uiState.value.JVMArgs,
+                    width = uiState.value.width.toLong(),
+                    height = uiState.value.height.toLong(),
+                    fullWindow = uiState.value.fullWindow,
+                    clienteFilter = uiState.value.clientFilter.name,
+                    javaExec = uiState.value.javaExecutable,
+                )
 
-            _uiState.value = uiState.value.copy(
-                loading = true
-            )
+                _uiState.value = uiState.value.copy(
+                    loading = true
+                )
 
-            instanceManager.insertInstance(instance)
+                instanceManager.insertInstance(instance)
 
-            onFinished()
+                onFinished()
+            } else {
+                val instance = instanceG!!.copy(
+                    instanceName = uiState.value.instanceName.ifEmpty { uiState.value.instanceNamePlaceHolder },
+                    versionFilter = uiState.value.versionFilter.name,
+                    version = uiState.value.version,
+                    JVMARGS = uiState.value.JVMArgs,
+                    width = uiState.value.width.toLong(),
+                    height = uiState.value.height.toLong(),
+                    fullWindow = uiState.value.fullWindow,
+                    clienteFilter = uiState.value.clientFilter.name,
+                    javaExec = uiState.value.javaExecutable,
+                )
+
+                instanceManager.updateInstance(instance)
+            }
         }
     }
 }

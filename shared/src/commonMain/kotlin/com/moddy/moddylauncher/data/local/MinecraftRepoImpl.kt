@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.data.local
 import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.data.download.DownloadRepository
 import com.moddy.moddylauncher.data.remote.MinecraftApi
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
@@ -18,49 +19,79 @@ class MinecraftRepoImpl(
     private val api: MinecraftApi,
     private val downloader: DownloadRepository,
     private val client: HttpClient,
-    private val launcher: MinecraftLauncher
+    private val launcher: MinecraftLauncher,
+    private val jreDownloader: AdoptiumRepoImpl
 ) : MinecraftRepository {
 
     private val json = Json { prettyPrint = true }
 
-    override suspend fun playVersion(versionId: String) {
-        val version = api.getVersion(versionId)
+    override suspend fun playVersion(instance: InstanceData, output: (String) -> Unit): Process {
+
+        output("[FETCHING-MANIFEST]: Fetching Minecraft version")
+
+        val version = api.getVersion(instance.version)
+
+        output("[FETCHING-MANIFEST]: Fetched version: ${version.id}")
 
         // Descargando Cliente
-        downloader.downloadFile(version.downloads.client.url, File(LauncherPaths.versions, "${version.id}.jar"))
+        output("[DOWNLOADING]: Downloading Minecraft Client")
+        downloader.downloadFile(
+            version.downloads.client.url,
+            File(LauncherPaths.versions, "${version.id}.jar"),
+            output = output
+        )
 
+        // Filtrado de librerias
+        output("[LIBRARY]: Filtering Libraries")
         val libraries = version.libraries.mapNotNull { library ->
             if (!isLibraryAllowed(library)) {
                 return@mapNotNull null
             } else {
-                Pair(library.downloads.artifact.url, File(LauncherPaths.libraries, library.downloads.artifact.path))
+                library.downloads.artifact?.let {
+                    Pair(
+                        it.url, File(LauncherPaths.libraries, library.downloads.artifact.path)
+                    )
+                }
             }
         }
 
+        output("[LIBRARY]: Filtering finished: ${libraries.size}")
+
+        // Descargando JRE
+        output("[JAVA-RUNTIME-EPILSON]: Downloading JRE")
+        val jre = jreDownloader.downloadAdoptium(
+            if (instance.javaExec.contains("Default")) version.javaVersion.majorVersion.toString() else instance.javaExec,
+            output = output
+        )
+
         // Descargando Dependencias
-        downloader.downloadFilesInParallel(libraries, 6)
+        output("[LIBRARY]: Downloading libraries in parallel")
+        downloader.downloadFilesInParallel(libraries, 6, output)
 
         // Descargando Assets
-        downloadAssets(version)
+        output("[ASSETS]: DOWNLOADING ASSETS")
+        downloadAssets(version, output)
 
         // Descargando Manifest
+        output("[MANIFEST]: Downloading manifest")
         val manifest = json.encodeToString(version)
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
+        output("[MANIFEST]: Downloaded manifest")
 
-        execute(version)
+        return execute(
+            version, instance = instance, jre = jre, libraries = libraries, output = output
+        )
     }
 
-    private suspend fun downloadAssets(version: VersionManifest) {
+    private suspend fun downloadAssets(version: VersionManifest, output: (String) -> Unit) {
         val manifestFile = LauncherPaths.index.resolve("${version.assetIndex.id}.json")
 
         val manifest = if (manifestFile.exists()) {
             json.parseToJsonElement(manifestFile.readText())
         } else {
-            client.get(version.assetIndex.url)
-                .body<JsonElement>()
-                .also { manifest ->
-                    manifestFile.writeText(json.encodeToString(manifest))
-                }
+            client.get(version.assetIndex.url).body<JsonElement>().also { manifest ->
+                manifestFile.writeText(json.encodeToString(manifest))
+            }
         }
 
         val assets = manifest.jsonObject["objects"]!!.jsonObject.values.map { value ->
@@ -71,30 +102,35 @@ class MinecraftRepoImpl(
             val folder = hash.take(2)
 
             val url = "https://resources.download.minecraft.net/$folder/$hash"
-            val destination = LauncherPaths.objects
-                .resolve(folder)
-                .resolve(hash)
+            val destination = LauncherPaths.objects.resolve(folder).resolve(hash)
 
             url to destination
         }
 
-        downloader.downloadFilesInParallel(assets, 12)
+        downloader.downloadFilesInParallel(assets, 12, output)
     }
 
     private fun isLibraryAllowed(library: Library): Boolean {
-        if (library.rules == null) return true
+        val rules = library.rules ?: return true
 
         val currentOs = when {
-            LauncherPaths.os.contains("win") -> "windows"
-            LauncherPaths.os.contains("mac") -> "osx"
+            LauncherPaths.os.contains("win", ignoreCase = true) -> "windows"
+            LauncherPaths.os.contains("mac", ignoreCase = true) -> "osx"
             else -> "linux"
         }
 
         var allowed = false
 
-        for ((action, os) in library.rules) {
+        for ((action, os) in rules) {
 
-            if (os?.name == currentOs) {
+            // Regla global: aplica independientemente del sistema operativo
+            if (os == null) {
+                allowed = action == "allow"
+                continue
+            }
+
+            // Regla específica para un sistema operativo
+            if (os.name == currentOs) {
                 allowed = action == "allow"
             }
         }
@@ -102,7 +138,13 @@ class MinecraftRepoImpl(
         return allowed
     }
 
-    private suspend fun execute(version: VersionManifest) {
-        launcher.launch(version)
+    private suspend fun execute(
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>,
+        output: (String) -> Unit
+    ): Process {
+        return launcher.launch(version, instance, jre = jre, libraries = libraries, output = output)
     }
 }

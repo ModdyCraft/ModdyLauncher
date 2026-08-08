@@ -5,12 +5,14 @@ import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
-import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -21,55 +23,119 @@ import java.io.File
 class MinecraftLauncherImpl(
     private val database: UserDTO,
 ) : MinecraftLauncher {
-    override suspend fun launch(version: VersionManifest) {
 
-        val defaultUserJvm = buildDefaultJvmArgs(
-            args = version.arguments.defaultUserJvm,
-            minMem = MemoryRam.G2,
-            maxMem = MemoryRam.G4
-        )
+    override suspend fun launch(
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>,
+        output: (String) -> Unit
+    ): Process {
 
-        val gameArgs = buildGameArgs(
-            args = version.arguments.game,
-            assetIndex = version.assetIndex.id,
-            versionId = version.id,
-            versionType = version.type,
-        )
+        output("[LAUNCHING] Preparing game arguments...")
 
-        val jvmArgs = buildJVMArgs(
-            args = version.arguments.jvm,
-            launcherName = "ModdyLauncher",
-            launcherVersion = "1.0.0"
-        )
+        val gameArgs = version.arguments?.let { arguments ->
+            buildGameArgs(
+                args = arguments.game,
+                assetIndex = version.assetIndex.id,
+                versionId = version.id,
+                versionType = version.type,
+                directory = instance.id.toString(),
+                width = instance.width.toString().takeIf { it != "0" }.orEmpty(),
+                height = instance.height.toString().takeIf { it != "0" }.orEmpty()
+            )
+        } ?: emptyList()
+
+        output("[LAUNCHING] Preparing JVM arguments...")
+
+        val jvmArgs = version.arguments?.let {
+            buildJVMArgs(
+                args = it.jvm,
+                launcherName = "ModdyLauncher",
+                launcherVersion = "1.0.0"
+            )
+        } ?: emptyList()
+
+        output("[LAUNCHING] Building classpath...")
 
         val classPath = buildClasspath(
-            libraries = version.libraries,
+            libraries = libraries,
             versionId = version.id
         )
 
+        output("[LAUNCHING] Building command...")
+
         val command = mutableListOf<String>()
 
-        // Cambiar por un ejecutable real en tu Dispositivo
-        command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.1\\bin\\javaw.exe")
+        command += jre.absolutePath
 
-        command.addAll(defaultUserJvm)
-        command.addAll(jvmArgs)
+        // JVM arguments configurados por la instancia
+        if (instance.JVMARGS.isNotBlank()) {
+            command += instance.JVMARGS
+                .trim()
+                .split(Regex("\\s+"))
+        }
 
-        command.add("-cp")
-        command.add(classPath)
+        // JVM arguments del manifest
+        command += jvmArgs
 
-        command.add(version.mainClass)
+        command += "-cp"
+        command += classPath
 
-        command.addAll(gameArgs)
+        command += version.mainClass
 
-        println(command)
+        // Argumentos del juego
+        command += gameArgs
 
-        withContext(Dispatchers.IO) {
+        output("[LAUNCHING] Starting Minecraft ${version.id}...")
+
+        val process = withContext(Dispatchers.IO) {
             ProcessBuilder(command)
-                .directory(LauncherPaths.newProfile(version.id).root)
-                .inheritIO()
+                .directory(
+                    LauncherPaths
+                        .newProfile(instance.id.toString())
+                        .root
+                )
+                .redirectErrorStream(false)
                 .start()
         }
+
+        output("[PROCESS] Minecraft process started (PID: ${process.pid()})")
+
+        // STDOUT
+        CoroutineScope(Dispatchers.IO).launch {
+            process.inputStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.forEach { line ->
+                        output(line)
+                    }
+                }
+        }
+
+        // STDERR
+        CoroutineScope(Dispatchers.IO).launch {
+            process.errorStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.forEach { line ->
+                        output("[STDERR] $line")
+                    }
+                }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val exitCode = process.waitFor()
+
+            output(
+                when (exitCode) {
+                    0 -> "[PROCESS] Minecraft closed normally."
+                    else -> "[PROCESS] Minecraft exited with code $exitCode."
+                }
+            )
+        }
+
+        return process
     }
 
     override fun buildDefaultJvmArgs(args: List<DefaultUserJvm>, minMem: MemoryRam, maxMem: MemoryRam): List<String> {
@@ -91,7 +157,10 @@ class MinecraftLauncherImpl(
         args: List<JsonElement>,
         assetIndex: String,
         versionId: String,
-        versionType: String
+        directory: String,
+        versionType: String,
+        width: String,
+        height: String,
     ): List<String> {
 
         val user = database.getUser()
@@ -137,9 +206,12 @@ class MinecraftLauncherImpl(
                         resolveArgument(
                             it,
                             versionId = versionId,
+                            directory = LauncherPaths.newProfile(directory).root.absolutePath,
                             assetIndex = assetIndex,
                             userData = user ?: UserData("NO NAMED"),
-                            versionType = versionType
+                            versionType = versionType,
+                            width = width,
+                            height = height,
                         )
                     }
             }
@@ -193,11 +265,9 @@ class MinecraftLauncherImpl(
             }
     }
 
-    override fun buildClasspath(libraries: List<Library>, versionId: String): String {
-        val libraries = libraries
-            .map { library ->
-                File(LauncherPaths.libraries, library.downloads.artifact.path)
-            }
+    override fun buildClasspath(libraries: List<Pair<String, File>>, versionId: String): String {
+
+        val libraries = libraries.map { it.second }
 
         val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath
 

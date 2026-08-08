@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.icons.play_arrow
 import moddylauncher.shared.generated.resources.INSTANCE_DEFAULT
 import moddylauncher.shared.generated.resources.Res
@@ -28,6 +29,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VersionCard(
+    instance: InstanceData,
     onClick: () -> Unit = {}
 ) {
 
@@ -83,7 +85,7 @@ fun VersionCard(
                     modifier = Modifier.size(70.dp)
                 )
             } else {
-                Text("VERSION IDENTIFIER", softWrap = true)
+                Text(instance.instanceName, softWrap = true)
             }
         }
     }

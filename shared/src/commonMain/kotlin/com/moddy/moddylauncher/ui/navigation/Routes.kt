@@ -3,13 +3,13 @@ package com.moddy.moddylauncher.ui.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Home
+object Home
 
 @Serializable
-class Splash
+object Splash
 
 @Serializable
-class Auth
+object Auth
 
 @Serializable
 data class InstanceManager(

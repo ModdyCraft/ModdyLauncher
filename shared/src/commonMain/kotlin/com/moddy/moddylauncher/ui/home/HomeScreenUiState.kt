@@ -4,8 +4,6 @@ import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.domain.model.MCVersion
 
 data class HomeScreenUiState(
-    val nickName: String = "",
-
     val versions: List<MCVersion> = emptyList(),
     val versionSelected: MCVersion? = null,
 

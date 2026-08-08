@@ -77,7 +77,7 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    "HOLA JUGADOR DE MNO"
+                    "Bienvenido, ${uiState.userName}"
                 )
                 Spacer(Modifier.width(8.dp))
                 Box(

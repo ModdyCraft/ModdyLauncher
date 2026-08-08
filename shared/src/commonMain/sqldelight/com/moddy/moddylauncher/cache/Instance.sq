@@ -2,17 +2,19 @@ CREATE TABLE Instance (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     instanceName TEXT NOT NULL,
     versionFilter TEXT NOT NULL,
+    clienteFIlter TEXT NOT NULL,
     version TEXT NOT NULL,
     directory TEXT NOT NULL,
     JVMARGS TEXT NOT NULL,
+    javaExecutable TEXT NOT NULL,
     width INTEGER NOT NULL,
     height INTEGER NOT NULL,
     fullWindow INTEGER NOT NULL DEFAULT 0
 );
 
 insertInstance:
-INSERT INTO Instance(id, instanceName, versionFilter, version, directory, JVMARGS, width, height, fullWindow)
-VALUES (id, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Instance(id, instanceName, versionFilter, version, directory, JVMARGS, width, height, fullWindow, javaExecutable, clienteFIlter)
+VALUES (id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateInstance:
 UPDATE Instance
@@ -24,7 +26,9 @@ directory = ?,
 JVMARGS = ?,
 width = ?,
 height = ?,
-fullWindow = ?
+fullWindow = ?,
+javaExecutable = ?,
+clienteFIlter = ?
 WHERE id = ?;
 
 getInstances:

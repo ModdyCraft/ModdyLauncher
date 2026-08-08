@@ -21,7 +21,9 @@ class InstanceDTO(
             JVMARGS = instance.JVMARGS,
             width = instance.width,
             height = instance.height,
-            fullWindow = instance.fullWindow
+            fullWindow = instance.fullWindow,
+            clienteFIlter = instance.clienteFIlter,
+            javaExecutable = instance.javaExecutable,
         )
     }
 
@@ -36,7 +38,9 @@ class InstanceDTO(
             width = instance.width,
             height = instance.height,
             fullWindow = instance.fullWindow,
-            id = instance.id
+            id = instance.id,
+            clienteFIlter = instance.clienteFIlter,
+            javaExecutable = instance.javaExecutable,
         )
     }
 

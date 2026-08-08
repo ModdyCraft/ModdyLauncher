@@ -18,4 +18,5 @@ data class InstanceManagerUiState(
     val height: String = "854",
     val width: String = "480",
     val fullWindow: Boolean = true,
+    val loading: Boolean = false,
 )

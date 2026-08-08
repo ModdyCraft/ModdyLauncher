@@ -17,11 +17,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.moddy.moddylauncher.ui.components.DropDownMenuField
+import com.moddy.moddylauncher.ui.components.LOADINGSPLASH
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun InstanceManagerScreen(
-    onCancelPressed: () -> Unit,
+    popBack: () -> Unit,
     viewModel: InstanceManagerViewModel = koinViewModel(),
 ) {
 
@@ -157,16 +158,22 @@ fun InstanceManagerScreen(
             horizontalArrangement = Arrangement.End
         ) {
             OutlinedButton(
-                onClick = onCancelPressed
+                onClick = popBack
             ) {
                 Text(text = "CANCEL")
             }
             Spacer(Modifier.width(16.dp))
             OutlinedButton(
-                onClick = { viewModel.onSavePressed() }
+                onClick = {
+                    viewModel.onSavePressed(
+                        onFinished = popBack
+                    )
+                }
             ) {
                 Text(text = "SAVE")
             }
         }
     }
+
+    LOADINGSPLASH(uiState.loading)
 }

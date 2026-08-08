@@ -2,6 +2,8 @@ package com.moddy.moddylauncher.ui.instance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moddy.moddylauncher.database.instance.InstanceDTO
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.domain.manifest.Version
 import com.moddy.moddylauncher.domain.usecases.ClientType
 import com.moddy.moddylauncher.domain.usecases.GetJREListUseCase
@@ -13,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class InstanceManagerViewModel(
     private val versionList: GetMinecraftListVersionsUseCase,
-    private val adoptiumList: GetJREListUseCase
+    private val adoptiumList: GetJREListUseCase,
+    private val instanceManager: InstanceDTO
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InstanceManagerUiState())
@@ -117,8 +120,30 @@ class InstanceManagerViewModel(
         )
     }
 
-    fun onSavePressed() {
+    fun onSavePressed(
+        onFinished: () -> Unit,
+    ) {
         viewModelScope.launch {
+
+            val instance = InstanceData(
+                instanceName = uiState.value.instanceName,
+                versionFilter = uiState.value.versionFilter.name,
+                version = uiState.value.version,
+                JVMARGS = uiState.value.JVMArgs,
+                width = uiState.value.width.toLong(),
+                height = uiState.value.height.toLong(),
+                fullWindow = uiState.value.fullWindow,
+                clienteFilter = uiState.value.clientFilter.name,
+                javaExec = uiState.value.javaExecutable,
+            )
+
+            _uiState.value = uiState.value.copy(
+                loading = true
+            )
+
+            instanceManager.insertInstance(instance)
+
+            onFinished()
         }
     }
 }

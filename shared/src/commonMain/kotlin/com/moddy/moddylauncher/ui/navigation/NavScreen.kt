@@ -15,7 +15,7 @@ fun NavScreen() {
 
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = Home) {
+    NavHost(navController, startDestination = Splash) {
 
         composable<Splash> {
             SplashScreen(

@@ -9,7 +9,6 @@ import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
-import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,16 +21,22 @@ import java.io.File
 class MinecraftLauncherImpl(
     private val database: UserDTO,
 ) : MinecraftLauncher {
-    override suspend fun launch(version: VersionManifest, instance: InstanceData, jre: File) {
+    override suspend fun launch(
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>
+    ) {
 
-        val gameArgs = version.arguments?.let {
+        val gameArgs = version.arguments?.let { arguments ->
             buildGameArgs(
-                args = it.game,
+                args = arguments.game,
                 assetIndex = version.assetIndex.id,
                 versionId = version.id,
                 versionType = version.type,
-                width = instance.width.toString(),
-                height = instance.height.toString(),
+                directory = instance.id.toString(),
+                width = instance.width.toString().takeIf { it != "0" }.orEmpty(),
+                height = instance.height.toString().takeIf { it != "0" }.orEmpty(),
             )
         }
 
@@ -44,7 +49,7 @@ class MinecraftLauncherImpl(
         }
 
         val classPath = buildClasspath(
-            libraries = version.libraries,
+            libraries = libraries,
             versionId = version.id
         )
 
@@ -96,6 +101,7 @@ class MinecraftLauncherImpl(
         args: List<JsonElement>,
         assetIndex: String,
         versionId: String,
+        directory: String,
         versionType: String,
         width: String,
         height: String,
@@ -144,6 +150,7 @@ class MinecraftLauncherImpl(
                         resolveArgument(
                             it,
                             versionId = versionId,
+                            directory = LauncherPaths.newProfile(directory).root.absolutePath,
                             assetIndex = assetIndex,
                             userData = user ?: UserData("NO NAMED"),
                             versionType = versionType,
@@ -202,11 +209,9 @@ class MinecraftLauncherImpl(
             }
     }
 
-    override fun buildClasspath(libraries: List<Library>, versionId: String): String {
-        val libraries = libraries
-            .map { library ->
-                library.downloads.artifact?.let { File(LauncherPaths.libraries, it.path) }
-            }
+    override fun buildClasspath(libraries: List<Pair<String, File>>, versionId: String): String {
+
+        val libraries = libraries.map { it.second }
 
         val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath
 

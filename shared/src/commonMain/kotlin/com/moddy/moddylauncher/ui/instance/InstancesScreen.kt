@@ -127,18 +127,6 @@ fun InstanceManagerScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
-                value = uiState.height,
-                onValueChange = viewModel::setWindowHeight,
-                modifier = Modifier.width(150.dp),
-                enabled = !uiState.fullWindow,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Number
-                ),
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            OutlinedTextField(
                 value = uiState.width,
                 onValueChange = viewModel::setWindowWidth,
                 modifier = Modifier.width(150.dp),
@@ -148,7 +136,22 @@ fun InstanceManagerScreen(
                     keyboardType = KeyboardType.Number
                 ),
                 singleLine = true,
-
+                placeholder = { Text("Width: Automatic") },
+                label = { Text("Width") },
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedTextField(
+                value = uiState.height,
+                onValueChange = viewModel::setWindowHeight,
+                modifier = Modifier.width(150.dp),
+                enabled = !uiState.fullWindow,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
+                singleLine = true,
+                placeholder = { Text("Height: Automatic") },
+                label = { Text("Height") },
             )
             Spacer(Modifier.width(16.dp))
             Checkbox(

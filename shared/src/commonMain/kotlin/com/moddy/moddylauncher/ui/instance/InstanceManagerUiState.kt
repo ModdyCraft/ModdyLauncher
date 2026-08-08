@@ -14,9 +14,9 @@ data class InstanceManagerUiState(
     val versions: List<String> = emptyList(),
     val javaExecutable: String = "Default",
     val jreList: List<String> = listOf("Default"),
-    val JVMArgs: String = "-Xms2G -Xmx4G -XX:+UseCompactObjectHeaders -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+UseZGC",
-    val height: String = "854",
-    val width: String = "480",
-    val fullWindow: Boolean = true,
+    val JVMArgs: String = "-Xms2G -Xmx4G -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+UseZGC",
+    val height: String = "",
+    val width: String = "",
+    val fullWindow: Boolean = false,
     val loading: Boolean = false,
 )

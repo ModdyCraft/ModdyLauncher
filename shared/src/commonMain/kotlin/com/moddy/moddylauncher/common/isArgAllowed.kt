@@ -104,6 +104,7 @@ fun resolveArgument(
     versionId: String,
     assetIndex: String,
     versionType: String,
+    directory: String,
     width: String,
     height: String,
     userData: UserData
@@ -112,7 +113,7 @@ fun resolveArgument(
     val variables = mapOf(
         "\${auth_player_name}" to userData.username,
         "\${version_name}" to versionId,
-        "\${game_directory}" to LauncherPaths.newProfile(versionId).root.absolutePath,
+        "\${game_directory}" to directory,
         "\${assets_root}" to LauncherPaths.assets.absolutePath.toString(),
         "\${assets_index_name}" to assetIndex,
         "\${auth_uuid}" to userData.uuid,

@@ -60,7 +60,7 @@ class MinecraftRepoImpl(
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
 
         execute(
-            version, instance = instance, jre = jre
+            version, instance = instance, jre = jre, libraries = libraries
         )
     }
 
@@ -112,7 +112,12 @@ class MinecraftRepoImpl(
         return allowed
     }
 
-    private suspend fun execute(version: VersionManifest, instance: InstanceData, jre: File) {
-        launcher.launch(version, instance, jre = jre)
+    private suspend fun execute(
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>
+    ) {
+        launcher.launch(version, instance, jre = jre, libraries = libraries)
     }
 }

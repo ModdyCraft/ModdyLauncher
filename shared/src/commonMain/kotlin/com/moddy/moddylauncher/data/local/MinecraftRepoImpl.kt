@@ -35,11 +35,16 @@ class MinecraftRepoImpl(
             if (!isLibraryAllowed(library)) {
                 return@mapNotNull null
             } else {
-                Pair(library.downloads.artifact.url, File(LauncherPaths.libraries, library.downloads.artifact.path))
+                library.downloads.artifact?.let {
+                    Pair(
+                        it.url,
+                        File(LauncherPaths.libraries, library.downloads.artifact.path)
+                    )
+                }
             }
         }
 
-        // Descarganod JRE
+        // Descargando JRE
         val jre = jreDownloader.downloadAdoptium(
             if (instance.javaExec.contains("Default")) version.javaVersion.majorVersion.toString() else instance.javaExec
         )

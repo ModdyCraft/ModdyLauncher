@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class VersionManifest(
-    val arguments: Arguments,
+    val arguments: Arguments? = null,
     val assetIndex: AssetIndex,
     val assets: String,
     val complianceLevel: Int,

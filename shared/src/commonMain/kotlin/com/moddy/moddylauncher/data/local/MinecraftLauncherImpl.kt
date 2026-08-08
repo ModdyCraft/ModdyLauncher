@@ -24,20 +24,24 @@ class MinecraftLauncherImpl(
 ) : MinecraftLauncher {
     override suspend fun launch(version: VersionManifest, instance: InstanceData, jre: File) {
 
-        val gameArgs = buildGameArgs(
-            args = version.arguments.game,
-            assetIndex = version.assetIndex.id,
-            versionId = version.id,
-            versionType = version.type,
-            width = instance.width.toString(),
-            height = instance.height.toString(),
-        )
+        val gameArgs = version.arguments?.let {
+            buildGameArgs(
+                args = it.game,
+                assetIndex = version.assetIndex.id,
+                versionId = version.id,
+                versionType = version.type,
+                width = instance.width.toString(),
+                height = instance.height.toString(),
+            )
+        }
 
-        val jvmArgs = buildJVMArgs(
-            args = version.arguments.jvm,
-            launcherName = "ModdyLauncher",
-            launcherVersion = "1.0.0"
-        )
+        val jvmArgs = version.arguments?.let {
+            buildJVMArgs(
+                args = it.jvm,
+                launcherName = "ModdyLauncher",
+                launcherVersion = "1.0.0"
+            )
+        }
 
         val classPath = buildClasspath(
             libraries = version.libraries,
@@ -50,14 +54,18 @@ class MinecraftLauncherImpl(
         command.add(jre.absolutePath)
 
         command.addAll(instance.JVMARGS.trim().split(Regex("\\s+")))
-        command.addAll(jvmArgs)
+        if (jvmArgs != null) {
+            command.addAll(jvmArgs)
+        }
 
         command.add("-cp")
         command.add(classPath)
 
         command.add(version.mainClass)
 
-        command.addAll(gameArgs)
+        if (gameArgs != null) {
+            command.addAll(gameArgs)
+        }
 
         println(command)
 
@@ -197,7 +205,7 @@ class MinecraftLauncherImpl(
     override fun buildClasspath(libraries: List<Library>, versionId: String): String {
         val libraries = libraries
             .map { library ->
-                File(LauncherPaths.libraries, library.downloads.artifact.path)
+                library.downloads.artifact?.let { File(LauncherPaths.libraries, it.path) }
             }
 
         val clientJar = File(LauncherPaths.versions, "$versionId.jar").absolutePath

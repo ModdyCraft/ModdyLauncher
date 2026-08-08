@@ -10,7 +10,9 @@ import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.VersionManifest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -21,15 +23,17 @@ import java.io.File
 class MinecraftLauncherImpl(
     private val database: UserDTO,
 ) : MinecraftLauncher {
+
     override suspend fun launch(
         version: VersionManifest,
         instance: InstanceData,
         jre: File,
         libraries: List<Pair<String, File>>,
         output: (String) -> Unit
-    ) {
+    ): Process {
 
-        output("[LAUNCHING]: Building GAME ARGS")
+        output("[LAUNCHING] Preparing game arguments...")
+
         val gameArgs = version.arguments?.let { arguments ->
             buildGameArgs(
                 args = arguments.game,
@@ -38,57 +42,100 @@ class MinecraftLauncherImpl(
                 versionType = version.type,
                 directory = instance.id.toString(),
                 width = instance.width.toString().takeIf { it != "0" }.orEmpty(),
-                height = instance.height.toString().takeIf { it != "0" }.orEmpty(),
+                height = instance.height.toString().takeIf { it != "0" }.orEmpty()
             )
-        }
+        } ?: emptyList()
 
-        output("[LAUNCHING]: Building jvmArgs")
+        output("[LAUNCHING] Preparing JVM arguments...")
+
         val jvmArgs = version.arguments?.let {
             buildJVMArgs(
                 args = it.jvm,
                 launcherName = "ModdyLauncher",
                 launcherVersion = "1.0.0"
             )
-        }
+        } ?: emptyList()
 
-        output("[LAUNCHING]: Building Classpath")
+        output("[LAUNCHING] Building classpath...")
+
         val classPath = buildClasspath(
             libraries = libraries,
             versionId = version.id
         )
 
-        output("[LAUNCHING]: Generating Command")
+        output("[LAUNCHING] Building command...")
+
         val command = mutableListOf<String>()
 
-        // Cambiar por un ejecutable real en tu Dispositivo
-        command.add(jre.absolutePath)
+        command += jre.absolutePath
 
-        command.addAll(instance.JVMARGS.trim().split(Regex("\\s+")))
-        if (jvmArgs != null) {
-            command.addAll(jvmArgs)
+        // JVM arguments configurados por la instancia
+        if (instance.JVMARGS.isNotBlank()) {
+            command += instance.JVMARGS
+                .trim()
+                .split(Regex("\\s+"))
         }
 
-        command.add("-cp")
-        command.add(classPath)
+        // JVM arguments del manifest
+        command += jvmArgs
 
-        command.add(version.mainClass)
+        command += "-cp"
+        command += classPath
 
-        if (gameArgs != null) {
-            command.addAll(gameArgs)
-        }
+        command += version.mainClass
 
-        output("[LAUNCHING]: Command: $command")
+        // Argumentos del juego
+        command += gameArgs
 
-        withContext(Dispatchers.IO) {
-            val procces = ProcessBuilder(command)
-                .directory(LauncherPaths.newProfile(instance.id.toString()).root)
-                .inheritIO()
+        output("[LAUNCHING] Starting Minecraft ${version.id}...")
+
+        val process = withContext(Dispatchers.IO) {
+            ProcessBuilder(command)
+                .directory(
+                    LauncherPaths
+                        .newProfile(instance.id.toString())
+                        .root
+                )
+                .redirectErrorStream(false)
                 .start()
-
-            output("[LAUNCHING]: Proc started")
-            output(procces.inputStream.bufferedReader().readText())
-            output("[CCMMDD][EXIT]")
         }
+
+        output("[PROCESS] Minecraft process started (PID: ${process.pid()})")
+
+        // STDOUT
+        CoroutineScope(Dispatchers.IO).launch {
+            process.inputStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.forEach { line ->
+                        output(line)
+                    }
+                }
+        }
+
+        // STDERR
+        CoroutineScope(Dispatchers.IO).launch {
+            process.errorStream
+                .bufferedReader()
+                .useLines { lines ->
+                    lines.forEach { line ->
+                        output("[STDERR] $line")
+                    }
+                }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val exitCode = process.waitFor()
+
+            output(
+                when (exitCode) {
+                    0 -> "[PROCESS] Minecraft closed normally."
+                    else -> "[PROCESS] Minecraft exited with code $exitCode."
+                }
+            )
+        }
+
+        return process
     }
 
     override fun buildDefaultJvmArgs(args: List<DefaultUserJvm>, minMem: MemoryRam, maxMem: MemoryRam): List<String> {

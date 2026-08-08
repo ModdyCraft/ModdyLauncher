@@ -19,6 +19,8 @@ class ConsoleDialogViewModel(
 
     private var instance = MutableStateFlow<InstanceData?>(null)
 
+    private var process: Process? = null
+
     init {
         println("Hello world!")
         println("This is my Console")
@@ -43,12 +45,34 @@ class ConsoleDialogViewModel(
             println("[INSTANCE]: Instance DATA: $instance")
             println("[FETCHING-MINECRAFT]: Minecraft VERSION -> ${instance.version}")
             viewModelScope.launch {
-                launch(instance, output = { println(it) })
+                process = launch(instance, output = { println(it) })
             }
         }
     }
 
     fun println(t: String) {
         _text.value = text.value.plus("\n$t ")
+    }
+
+    fun stopGame() {
+        process?.let {
+            if (it.isAlive) {
+                it.destroy()
+            }
+        }
+
+        process = null
+    }
+
+    override fun onCleared() {
+        process?.let {
+            if (it.isAlive) {
+                it.destroy()
+            }
+        }
+
+        process = null
+
+        super.onCleared()
     }
 }

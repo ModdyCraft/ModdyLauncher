@@ -31,6 +31,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     var showConsoleDialog by remember { mutableStateOf(false) }
+    var instanceId by remember { mutableStateOf(0) }
 
     val reload = navController.currentBackStackEntry
         ?.savedStateHandle
@@ -105,16 +106,17 @@ fun HomeScreen(
                                 viewModel.deleteInstance(instance.id)
                             },
                             onEditPressed = { onEditVersionCard(instance.id) },
-                        ) { showConsoleDialog = true }
-
-                        ConsoleDialog(
-                            onCloseRequest = { showConsoleDialog = false },
-                            visible = showConsoleDialog,
-                            instanceId = instance.id
-                        )
+                        ) { showConsoleDialog = true; instanceId = instance.id }
                     }
                 }
             }
+        )
+    }
+
+    if (showConsoleDialog) {
+        ConsoleDialog(
+            onCloseRequest = { showConsoleDialog = false },
+            instanceId = instanceId
         )
     }
 }

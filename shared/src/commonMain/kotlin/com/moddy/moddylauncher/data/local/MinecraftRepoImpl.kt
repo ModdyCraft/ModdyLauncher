@@ -25,7 +25,7 @@ class MinecraftRepoImpl(
 
     private val json = Json { prettyPrint = true }
 
-    override suspend fun playVersion(instance: InstanceData, output: (String) -> Unit) {
+    override suspend fun playVersion(instance: InstanceData, output: (String) -> Unit): Process {
 
         output("[FETCHING-MANIFEST]: Fetching Minecraft version")
 
@@ -78,7 +78,7 @@ class MinecraftRepoImpl(
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
         output("[MANIFEST]: Downloaded manifest")
 
-        execute(
+        return execute(
             version, instance = instance, jre = jre, libraries = libraries, output = output
         )
     }
@@ -144,7 +144,7 @@ class MinecraftRepoImpl(
         jre: File,
         libraries: List<Pair<String, File>>,
         output: (String) -> Unit
-    ) {
-        launcher.launch(version, instance, jre = jre, libraries = libraries, output = output)
+    ): Process {
+        return launcher.launch(version, instance, jre = jre, libraries = libraries, output = output)
     }
 }

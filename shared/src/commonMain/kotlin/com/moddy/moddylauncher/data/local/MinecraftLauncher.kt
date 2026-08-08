@@ -15,7 +15,7 @@ interface MinecraftLauncher {
         jre: File,
         libraries: List<Pair<String, File>>,
         output: (String) -> Unit
-    )
+    ): Process
 
     fun buildDefaultJvmArgs(
         args: List<DefaultUserJvm>,

@@ -4,5 +4,5 @@ import com.moddy.moddylauncher.database.instance.InstanceData
 
 interface MinecraftRepository {
 
-    suspend fun playVersion(instance: InstanceData, output: (String) -> Unit)
+    suspend fun playVersion(instance: InstanceData, output: (String) -> Unit): Process
 }

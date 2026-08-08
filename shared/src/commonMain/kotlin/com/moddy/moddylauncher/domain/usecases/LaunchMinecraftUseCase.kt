@@ -6,7 +6,7 @@ import com.moddy.moddylauncher.database.instance.InstanceData
 class LaunchMinecraftUseCase(
     private val launcher: MinecraftRepository,
 ) {
-    suspend operator fun invoke(instance: InstanceData, output: (String) -> Unit) {
-        launcher.playVersion(instance, output = output)
+    suspend operator fun invoke(instance: InstanceData, output: (String) -> Unit): Process {
+        return launcher.playVersion(instance, output = output)
     }
 }

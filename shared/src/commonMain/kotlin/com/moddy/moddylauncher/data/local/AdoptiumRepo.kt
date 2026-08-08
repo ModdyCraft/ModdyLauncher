@@ -1,6 +1,8 @@
 package com.moddy.moddylauncher.data.local
 
+import java.io.File
+
 interface AdoptiumRepo {
 
-    suspend fun downloadAdoptium(version: String)
+    suspend fun downloadAdoptium(version: String): File
 }

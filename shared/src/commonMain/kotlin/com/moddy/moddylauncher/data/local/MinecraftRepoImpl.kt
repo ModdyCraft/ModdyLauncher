@@ -19,7 +19,8 @@ class MinecraftRepoImpl(
     private val api: MinecraftApi,
     private val downloader: DownloadRepository,
     private val client: HttpClient,
-    private val launcher: MinecraftLauncher
+    private val launcher: MinecraftLauncher,
+    private val jreDownloader: AdoptiumRepoImpl
 ) : MinecraftRepository {
 
     private val json = Json { prettyPrint = true }
@@ -38,6 +39,11 @@ class MinecraftRepoImpl(
             }
         }
 
+        // Descarganod JRE
+        val jre = jreDownloader.downloadAdoptium(
+            if (instance.javaExec.contains("Default")) version.javaVersion.majorVersion.toString() else instance.javaExec
+        )
+
         // Descargando Dependencias
         downloader.downloadFilesInParallel(libraries, 6)
 
@@ -49,7 +55,7 @@ class MinecraftRepoImpl(
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
 
         execute(
-            version, instance = instance
+            version, instance = instance, jre = jre
         )
     }
 
@@ -60,8 +66,8 @@ class MinecraftRepoImpl(
             json.parseToJsonElement(manifestFile.readText())
         } else {
             client.get(version.assetIndex.url).body<JsonElement>().also { manifest ->
-                    manifestFile.writeText(json.encodeToString(manifest))
-                }
+                manifestFile.writeText(json.encodeToString(manifest))
+            }
         }
 
         val assets = manifest.jsonObject["objects"]!!.jsonObject.values.map { value ->
@@ -101,7 +107,7 @@ class MinecraftRepoImpl(
         return allowed
     }
 
-    private suspend fun execute(version: VersionManifest, instance: InstanceData) {
-        launcher.launch(version, instance)
+    private suspend fun execute(version: VersionManifest, instance: InstanceData, jre: File) {
+        launcher.launch(version, instance, jre = jre)
     }
 }

@@ -6,10 +6,11 @@ import com.moddy.moddylauncher.domain.version.DefaultUserJvm
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import kotlinx.serialization.json.JsonElement
+import java.io.File
 
 interface MinecraftLauncher {
 
-    suspend fun launch(version: VersionManifest, instance: InstanceData)
+    suspend fun launch(version: VersionManifest, instance: InstanceData, jre: File)
 
     fun buildDefaultJvmArgs(
         args: List<DefaultUserJvm>,

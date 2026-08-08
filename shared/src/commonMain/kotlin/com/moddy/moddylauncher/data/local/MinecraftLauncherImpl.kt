@@ -22,7 +22,7 @@ import java.io.File
 class MinecraftLauncherImpl(
     private val database: UserDTO,
 ) : MinecraftLauncher {
-    override suspend fun launch(version: VersionManifest, instance: InstanceData) {
+    override suspend fun launch(version: VersionManifest, instance: InstanceData, jre: File) {
 
         val gameArgs = buildGameArgs(
             args = version.arguments.game,
@@ -47,7 +47,7 @@ class MinecraftLauncherImpl(
         val command = mutableListOf<String>()
 
         // Cambiar por un ejecutable real en tu Dispositivo
-        command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.2\\bin\\javaw.exe")
+        command.add(jre.absolutePath)
 
         command.addAll(instance.JVMARGS.trim().split(Regex("\\s+")))
         command.addAll(jvmArgs)

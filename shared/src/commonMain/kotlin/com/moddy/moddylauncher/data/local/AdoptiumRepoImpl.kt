@@ -11,7 +11,7 @@ class AdoptiumRepoImpl(
     private val downloader: DownloadRepository
 ) : AdoptiumRepo {
 
-    override suspend fun downloadAdoptium(version: String) {
+    override suspend fun downloadAdoptium(version: String): File {
 
         val os = getAdoptiumOS()
         val arch = getAdoptiumArch()
@@ -35,7 +35,8 @@ class AdoptiumRepoImpl(
         )
 
         if (destination.exists()) {
-            return
+            return destination.resolve("bin")
+                .resolve("javaw.exe")
         }
 
         downloader.downloadFile(
@@ -51,6 +52,9 @@ class AdoptiumRepoImpl(
         } finally {
             zipFile.delete()
         }
+
+        return destination.resolve("bin")
+            .resolve("javaw.exe")
     }
 
 

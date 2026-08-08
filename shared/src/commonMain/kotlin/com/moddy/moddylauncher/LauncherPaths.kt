@@ -69,11 +69,6 @@ object LauncherPaths {
     val objects = File(assets, "objects")
 
     /**
-     * Carpeta de versiones de java
-     */
-    val javaVersions = File(meta, "java_versions")
-
-    /**
      * Carpeta de dependencias del juego
      */
     val libraries = File(meta, "libraries")
@@ -141,7 +136,6 @@ object LauncherPaths {
             launcherLogs,
             meta,
             assets,
-            javaVersions,
             libraries,
             logConfigs,
             natives,

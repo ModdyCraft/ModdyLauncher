@@ -106,7 +106,7 @@ fun HomeScreen(
                             },
                             onEditPressed = { onEditVersionCard(instance.id) },
                         ) {
-
+                            viewModel.onPlay(instance)
                         }
                     }
                 }

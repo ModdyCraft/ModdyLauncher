@@ -3,6 +3,7 @@ package com.moddy.moddylauncher.data.local
 import com.moddy.moddylauncher.LauncherPaths
 import com.moddy.moddylauncher.data.download.DownloadRepository
 import com.moddy.moddylauncher.data.remote.MinecraftApi
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.domain.version.Library
 import com.moddy.moddylauncher.domain.version.VersionManifest
 import io.ktor.client.*
@@ -23,8 +24,8 @@ class MinecraftRepoImpl(
 
     private val json = Json { prettyPrint = true }
 
-    override suspend fun playVersion(versionId: String) {
-        val version = api.getVersion(versionId)
+    override suspend fun playVersion(instance: InstanceData) {
+        val version = api.getVersion(instance.version)
 
         // Descargando Cliente
         downloader.downloadFile(version.downloads.client.url, File(LauncherPaths.versions, "${version.id}.jar"))
@@ -47,7 +48,9 @@ class MinecraftRepoImpl(
         val manifest = json.encodeToString(version)
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
 
-        execute(version)
+        execute(
+            version, instance = instance
+        )
     }
 
     private suspend fun downloadAssets(version: VersionManifest) {
@@ -56,9 +59,7 @@ class MinecraftRepoImpl(
         val manifest = if (manifestFile.exists()) {
             json.parseToJsonElement(manifestFile.readText())
         } else {
-            client.get(version.assetIndex.url)
-                .body<JsonElement>()
-                .also { manifest ->
+            client.get(version.assetIndex.url).body<JsonElement>().also { manifest ->
                     manifestFile.writeText(json.encodeToString(manifest))
                 }
         }
@@ -71,9 +72,7 @@ class MinecraftRepoImpl(
             val folder = hash.take(2)
 
             val url = "https://resources.download.minecraft.net/$folder/$hash"
-            val destination = LauncherPaths.objects
-                .resolve(folder)
-                .resolve(hash)
+            val destination = LauncherPaths.objects.resolve(folder).resolve(hash)
 
             url to destination
         }
@@ -102,7 +101,7 @@ class MinecraftRepoImpl(
         return allowed
     }
 
-    private suspend fun execute(version: VersionManifest) {
-        launcher.launch(version)
+    private suspend fun execute(version: VersionManifest, instance: InstanceData) {
+        launcher.launch(version, instance)
     }
 }

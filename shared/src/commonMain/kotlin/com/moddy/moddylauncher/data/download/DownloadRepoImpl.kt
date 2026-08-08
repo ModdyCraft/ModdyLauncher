@@ -18,6 +18,11 @@ class DownloadRepoImpl(
     override suspend fun downloadFile(url: String, destination: File) {
         destination.parentFile?.mkdirs()
 
+        if (destination.exists()) {
+            println("File already exists: ${destination.absolutePath}")
+            return
+        }
+
         println("Downloading $url")
 
         val tempFile = File(destination.parentFile, "${destination.name}.part")

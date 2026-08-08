@@ -5,6 +5,7 @@ import com.moddy.moddylauncher.common.MemoryRam
 import com.moddy.moddylauncher.common.isArgAllowed
 import com.moddy.moddylauncher.common.resolveArgument
 import com.moddy.moddylauncher.common.resolveJVMArgument
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.database.user.UserDTO
 import com.moddy.moddylauncher.database.user.UserData
 import com.moddy.moddylauncher.domain.version.DefaultUserJvm
@@ -21,19 +22,15 @@ import java.io.File
 class MinecraftLauncherImpl(
     private val database: UserDTO,
 ) : MinecraftLauncher {
-    override suspend fun launch(version: VersionManifest) {
-
-        val defaultUserJvm = buildDefaultJvmArgs(
-            args = version.arguments.defaultUserJvm,
-            minMem = MemoryRam.G2,
-            maxMem = MemoryRam.G4
-        )
+    override suspend fun launch(version: VersionManifest, instance: InstanceData) {
 
         val gameArgs = buildGameArgs(
             args = version.arguments.game,
             assetIndex = version.assetIndex.id,
             versionId = version.id,
             versionType = version.type,
+            width = instance.width.toString(),
+            height = instance.height.toString(),
         )
 
         val jvmArgs = buildJVMArgs(
@@ -52,7 +49,7 @@ class MinecraftLauncherImpl(
         // Cambiar por un ejecutable real en tu Dispositivo
         command.add("C:\\Users\\ModdyDev\\.jdks\\openjdk-26.0.2\\bin\\javaw.exe")
 
-        command.addAll(defaultUserJvm)
+        command.addAll(instance.JVMARGS.trim().split(Regex("\\s+")))
         command.addAll(jvmArgs)
 
         command.add("-cp")
@@ -66,7 +63,7 @@ class MinecraftLauncherImpl(
 
         withContext(Dispatchers.IO) {
             ProcessBuilder(command)
-                .directory(LauncherPaths.newProfile(version.id).root)
+                .directory(LauncherPaths.newProfile(instance.id.toString()).root)
                 .inheritIO()
                 .start()
         }
@@ -91,7 +88,9 @@ class MinecraftLauncherImpl(
         args: List<JsonElement>,
         assetIndex: String,
         versionId: String,
-        versionType: String
+        versionType: String,
+        width: String,
+        height: String,
     ): List<String> {
 
         val user = database.getUser()
@@ -139,7 +138,9 @@ class MinecraftLauncherImpl(
                             versionId = versionId,
                             assetIndex = assetIndex,
                             userData = user ?: UserData("NO NAMED"),
-                            versionType = versionType
+                            versionType = versionType,
+                            width = width,
+                            height = height,
                         )
                     }
             }

@@ -3,7 +3,7 @@ package com.moddy.moddylauncher.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moddy.moddylauncher.database.instance.InstanceDTO
-import com.moddy.moddylauncher.domain.model.MCVersion
+import com.moddy.moddylauncher.database.instance.InstanceData
 import com.moddy.moddylauncher.domain.usecases.LaunchMinecraftUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,22 +29,10 @@ class HomeScreenViewModel(
         }
     }
 
-    fun launch() {
+    fun onPlay(instance: InstanceData) {
         viewModelScope.launch {
-            uiState.value.versionSelected?.let { launcher(it.version) }
+            launcher(instance)
         }
-    }
-
-    fun setVersionSelected(version: MCVersion) {
-        _uiState.value = _uiState.value.copy(
-            versionSelected = version,
-        )
-    }
-
-    fun setUserName(userName: String) {
-        _uiState.value = _uiState.value.copy(
-            userName = userName
-        )
     }
 
     fun deleteInstance(id: Int) {

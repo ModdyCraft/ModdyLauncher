@@ -104,6 +104,8 @@ fun resolveArgument(
     versionId: String,
     assetIndex: String,
     versionType: String,
+    width: String,
+    height: String,
     userData: UserData
 ): String {
 
@@ -118,8 +120,8 @@ fun resolveArgument(
         "\${clientid}" to versionId,
         "\${auth_xuid}" to "0",
         "\${version_type}" to versionType,
-        "\${resolution_width}" to "DEFAULT",
-        "\${resolution_height}" to "DEFAULT",
+        "\${resolution_width}" to width,
+        "\${resolution_height}" to height,
     )
 
     return variables[argument] ?: argument

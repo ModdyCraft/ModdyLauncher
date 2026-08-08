@@ -15,6 +15,8 @@ fun DropDownMenuField(
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf(0) }
 
+    val options = options.ifEmpty { listOf("Default") }
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {

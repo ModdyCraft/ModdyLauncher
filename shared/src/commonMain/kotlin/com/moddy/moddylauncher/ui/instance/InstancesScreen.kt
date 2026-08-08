@@ -174,7 +174,8 @@ fun InstanceManagerScreen(
                     viewModel.onSavePressed(
                         onFinished = popBack
                     )
-                }
+                },
+                enabled = uiState.versions.isNotEmpty(),
             ) {
                 Text(text = "SAVE")
             }

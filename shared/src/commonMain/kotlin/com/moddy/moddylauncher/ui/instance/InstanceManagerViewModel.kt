@@ -171,10 +171,11 @@ class InstanceManagerViewModel(
     fun onSavePressed(
         onFinished: () -> Unit
     ) {
+        _uiState.update {
+            it.copy(loading = true)
+        }
+
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(loading = true)
-            }
 
             val state = _uiState.value
 

@@ -25,12 +25,24 @@ class MinecraftRepoImpl(
 
     private val json = Json { prettyPrint = true }
 
-    override suspend fun playVersion(instance: InstanceData) {
+    override suspend fun playVersion(instance: InstanceData, output: (String) -> Unit) {
+
+        output("[FETCHING-MANIFEST]: Fetching Minecraft version")
+
         val version = api.getVersion(instance.version)
 
-        // Descargando Cliente
-        downloader.downloadFile(version.downloads.client.url, File(LauncherPaths.versions, "${version.id}.jar"))
+        output("[FETCHING-MANIFEST]: Fetched version: ${version.id}")
 
+        // Descargando Cliente
+        output("[DOWNLOADING]: Downloading Minecraft Client")
+        downloader.downloadFile(
+            version.downloads.client.url,
+            File(LauncherPaths.versions, "${version.id}.jar"),
+            output = output
+        )
+
+        // Filtrado de librerias
+        output("[LIBRARY]: Filtering Libraries")
         val libraries = version.libraries.mapNotNull { library ->
             if (!isLibraryAllowed(library)) {
                 return@mapNotNull null
@@ -43,27 +55,35 @@ class MinecraftRepoImpl(
             }
         }
 
+        output("[LIBRARY]: Filtering finished: ${libraries.size}")
+
         // Descargando JRE
+        output("[JAVA-RUNTIME-EPILSON]: Downloading JRE")
         val jre = jreDownloader.downloadAdoptium(
-            if (instance.javaExec.contains("Default")) version.javaVersion.majorVersion.toString() else instance.javaExec
+            if (instance.javaExec.contains("Default")) version.javaVersion.majorVersion.toString() else instance.javaExec,
+            output = output
         )
 
         // Descargando Dependencias
-        downloader.downloadFilesInParallel(libraries, 6)
+        output("[LIBRARY]: Downloading libraries in parallel")
+        downloader.downloadFilesInParallel(libraries, 6, output)
 
         // Descargando Assets
-        downloadAssets(version)
+        output("[ASSETS]: DOWNLOADING ASSETS")
+        downloadAssets(version, output)
 
         // Descargando Manifest
+        output("[MANIFEST]: Downloading manifest")
         val manifest = json.encodeToString(version)
         File(LauncherPaths.versions, "${version.id}.json").writeText(manifest)
+        output("[MANIFEST]: Downloaded manifest")
 
         execute(
-            version, instance = instance, jre = jre, libraries = libraries
+            version, instance = instance, jre = jre, libraries = libraries, output = output
         )
     }
 
-    private suspend fun downloadAssets(version: VersionManifest) {
+    private suspend fun downloadAssets(version: VersionManifest, output: (String) -> Unit) {
         val manifestFile = LauncherPaths.index.resolve("${version.assetIndex.id}.json")
 
         val manifest = if (manifestFile.exists()) {
@@ -87,7 +107,7 @@ class MinecraftRepoImpl(
             url to destination
         }
 
-        downloader.downloadFilesInParallel(assets, 12)
+        downloader.downloadFilesInParallel(assets, 12, output)
     }
 
     private fun isLibraryAllowed(library: Library): Boolean {
@@ -119,8 +139,12 @@ class MinecraftRepoImpl(
     }
 
     private suspend fun execute(
-        version: VersionManifest, instance: InstanceData, jre: File, libraries: List<Pair<String, File>>
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>,
+        output: (String) -> Unit
     ) {
-        launcher.launch(version, instance, jre = jre, libraries = libraries)
+        launcher.launch(version, instance, jre = jre, libraries = libraries, output = output)
     }
 }

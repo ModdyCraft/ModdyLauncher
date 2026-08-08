@@ -9,7 +9,13 @@ import java.io.File
 
 interface MinecraftLauncher {
 
-    suspend fun launch(version: VersionManifest, instance: InstanceData, jre: File, libraries: List<Pair<String, File>>)
+    suspend fun launch(
+        version: VersionManifest,
+        instance: InstanceData,
+        jre: File,
+        libraries: List<Pair<String, File>>,
+        output: (String) -> Unit
+    )
 
     fun buildDefaultJvmArgs(
         args: List<DefaultUserJvm>,

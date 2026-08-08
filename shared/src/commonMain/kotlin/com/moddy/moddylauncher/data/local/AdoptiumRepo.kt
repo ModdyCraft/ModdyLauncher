@@ -4,5 +4,5 @@ import java.io.File
 
 interface AdoptiumRepo {
 
-    suspend fun downloadAdoptium(version: String): File
+    suspend fun downloadAdoptium(version: String, output: (String) -> Unit): File
 }

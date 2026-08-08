@@ -25,9 +25,11 @@ class MinecraftLauncherImpl(
         version: VersionManifest,
         instance: InstanceData,
         jre: File,
-        libraries: List<Pair<String, File>>
+        libraries: List<Pair<String, File>>,
+        output: (String) -> Unit
     ) {
 
+        output("[LAUNCHING]: Building GAME ARGS")
         val gameArgs = version.arguments?.let { arguments ->
             buildGameArgs(
                 args = arguments.game,
@@ -40,6 +42,7 @@ class MinecraftLauncherImpl(
             )
         }
 
+        output("[LAUNCHING]: Building jvmArgs")
         val jvmArgs = version.arguments?.let {
             buildJVMArgs(
                 args = it.jvm,
@@ -48,11 +51,13 @@ class MinecraftLauncherImpl(
             )
         }
 
+        output("[LAUNCHING]: Building Classpath")
         val classPath = buildClasspath(
             libraries = libraries,
             versionId = version.id
         )
 
+        output("[LAUNCHING]: Generating Command")
         val command = mutableListOf<String>()
 
         // Cambiar por un ejecutable real en tu Dispositivo
@@ -72,13 +77,17 @@ class MinecraftLauncherImpl(
             command.addAll(gameArgs)
         }
 
-        println(command)
+        output("[LAUNCHING]: Command: $command")
 
         withContext(Dispatchers.IO) {
-            ProcessBuilder(command)
+            val procces = ProcessBuilder(command)
                 .directory(LauncherPaths.newProfile(instance.id.toString()).root)
                 .inheritIO()
                 .start()
+
+            output("[LAUNCHING]: Proc started")
+            output(procces.inputStream.bufferedReader().readText())
+            output("[CCMMDD][EXIT]")
         }
     }
 

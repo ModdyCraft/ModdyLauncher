@@ -10,7 +10,7 @@ class AdoptiumRepoImpl(
     private val api: AdoptiumApi, private val downloader: DownloadRepository
 ) : AdoptiumRepo {
 
-    override suspend fun downloadAdoptium(version: String): File {
+    override suspend fun downloadAdoptium(version: String, output: (String) -> Unit): File {
 
         val os = getAdoptiumOS()
         val arch = getAdoptiumArch()
@@ -30,20 +30,27 @@ class AdoptiumRepoImpl(
         )
 
         if (destination.exists()) {
+            output("[JRE]: JRE Founded (${destination.absolutePath})")
             return destination.resolve("bin").resolve("javaw.exe")
         }
 
         downloader.downloadFile(
-            packageInfo?.link.toString(), zipFile
+            packageInfo?.link.toString(), zipFile,
+            output = output
         )
+
+
+        output("[JRE]: Unzipping")
 
         try {
             extractZip(
                 zipFile, destination
             )
         } finally {
+            output("[JRE]: Unzipped")
             zipFile.delete()
         }
+        output("[JRE]: JRE Founded (${destination.absolutePath})")
 
         return destination.resolve("bin").resolve("javaw.exe")
     }

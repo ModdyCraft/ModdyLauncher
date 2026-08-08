@@ -1,5 +1,6 @@
 package com.moddy.moddylauncher.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -48,7 +49,12 @@ fun DropDownMenuField(
                         selectedIndex = i
                         selected(s)
                         expanded = false
-                    }
+                    },
+                    trailingIcon = {
+                    },
+                    modifier = Modifier.background(
+                        MaterialTheme.colorScheme.primary.copy(alpha = if (selectedOption != s) 0.5f else 1f)
+                    )
                 )
             }
         }

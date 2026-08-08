@@ -5,7 +5,7 @@ import com.moddy.moddylauncher.data.remote.MinecraftApi
 class GetMinecraftListVersionsUseCase(
     private val api: MinecraftApi
 ) {
-    suspend operator fun invoke(vararg filter: VersionType) = api.getVersions(*filter).map { it.id }
+    suspend operator fun invoke(vararg filter: VersionType) = api.getVersions(*filter)
 }
 
 enum class VersionType {

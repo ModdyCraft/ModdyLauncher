@@ -11,4 +11,5 @@ val UseCasesModule = module {
     factoryOf(::CreateUserUseCase)
     factoryOf(::GetUserUseCase)
     factoryOf(::DownloadManifestUseCase)
+    factoryOf(::GetJREListUseCase)
 }

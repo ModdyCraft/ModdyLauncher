@@ -1,0 +1,39 @@
+CREATE TABLE Instance (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    instanceName TEXT NOT NULL,
+    versionFilter TEXT NOT NULL,
+    version TEXT NOT NULL,
+    directory TEXT NOT NULL,
+    JVMARGS TEXT NOT NULL,
+    width INTEGER NOT NULL,
+    height INTEGER NOT NULL,
+    fullWindow INTEGER NOT NULL DEFAULT 0
+);
+
+insertInstance:
+INSERT INTO Instance(id, instanceName, versionFilter, version, directory, JVMARGS, width, height, fullWindow)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0);
+
+updateInstance:
+UPDATE Instance
+SET
+instanceName = ?,
+versionFilter = ?,
+version = ?,
+directory = ?,
+JVMARGS = ?,
+width = ?,
+height = ?,
+fullWindow = ?
+WHERE id = ?;
+
+getInstances:
+SELECT * FROM Instance;
+
+getInstanceByID:
+SELECT * FROM Instance
+WHERE id = ?;
+
+deleteInstance:
+DELETE FROM Instance
+WHERE id = ?;

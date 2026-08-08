@@ -2,8 +2,9 @@ package com.moddy.moddylauncher.ui.instance
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moddy.moddylauncher.data.local.AdoptiumRepo
+import com.moddy.moddylauncher.domain.manifest.Version
 import com.moddy.moddylauncher.domain.usecases.ClientType
+import com.moddy.moddylauncher.domain.usecases.GetJREListUseCase
 import com.moddy.moddylauncher.domain.usecases.GetMinecraftListVersionsUseCase
 import com.moddy.moddylauncher.domain.usecases.VersionType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,17 +13,28 @@ import kotlinx.coroutines.launch
 
 class InstanceManagerViewModel(
     private val versionList: GetMinecraftListVersionsUseCase,
-    private val adoptiumRepo: AdoptiumRepo
+    private val adoptiumList: GetJREListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InstanceManagerUiState())
     val uiState: StateFlow<InstanceManagerUiState> = _uiState
 
+    private var versionsA: List<Version> = emptyList()
+    private var versionsB: List<String> = emptyList()
+
     init {
         viewModelScope.launch {
-            val versions = versionList(uiState.value.versionFilter)
+            val listJre = adoptiumList()!!.map { it.toString() }.toMutableList()
 
-            setNewUiState(versions)
+            listJre.addFirst("Default")
+            versionsA = versionList(uiState.value.versionFilter)
+            versionsB = versionsA.map { it.id }
+
+            setNewUiState(versionsB)
+
+            _uiState.value = uiState.value.copy(
+                jreList = listJre
+            )
         }
     }
 
@@ -40,6 +52,18 @@ class InstanceManagerViewModel(
         )
     }
 
+    fun setJVMArguments(jvmArgs: String) {
+        _uiState.value = uiState.value.copy(
+            JVMArgs = jvmArgs
+        )
+    }
+
+    fun setJavaExecutable(javaExecutable: String) {
+        _uiState.value = uiState.value.copy(
+            javaExecutable = javaExecutable
+        )
+    }
+
     fun setInstanceFolder(folder: String) {}
 
     fun setVersionFilter(filter: VersionType) {
@@ -52,9 +76,9 @@ class InstanceManagerViewModel(
             val versions = versionList(uiState.value.versionFilter)
 
             _uiState.value = uiState.value.copy(
-                versions = versions,
-                version = versions.first(),
-                instanceNamePlaceHolder = versions.first()
+                versions = versionsB,
+                version = versionsB.first(),
+                instanceNamePlaceHolder = versionsB.first()
             )
         }
     }
@@ -95,7 +119,6 @@ class InstanceManagerViewModel(
 
     fun onSavePressed() {
         viewModelScope.launch {
-            adoptiumRepo.downloadAdoptium("25")
         }
     }
 }

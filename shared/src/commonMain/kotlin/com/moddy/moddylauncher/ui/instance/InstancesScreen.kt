@@ -93,10 +93,11 @@ fun InstanceManagerScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        OutlinedTextField(
-            value = uiState.javaExecutable,
-            onValueChange = {},
-            singleLine = true,
+        DropDownMenuField(
+            options = uiState.jreList,
+            selected = {
+                viewModel.setJavaExecutable(uiState.jreList[it])
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -104,7 +105,7 @@ fun InstanceManagerScreen(
 
         OutlinedTextField(
             value = uiState.JVMArgs,
-            onValueChange = {},
+            onValueChange = viewModel::setJVMArguments,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )

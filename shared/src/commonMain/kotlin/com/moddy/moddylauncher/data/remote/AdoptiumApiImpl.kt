@@ -15,7 +15,7 @@ class AdoptiumApiImpl(
     override suspend fun getAdoptiumReleases(): Adoptium? {
 
         if (adoptium == null) {
-            adoptium = httpClient.get("https://adoptium.com").body()
+            adoptium = httpClient.get("https://api.adoptium.net/v3/info/available_releases").body()
         }
 
         return adoptium

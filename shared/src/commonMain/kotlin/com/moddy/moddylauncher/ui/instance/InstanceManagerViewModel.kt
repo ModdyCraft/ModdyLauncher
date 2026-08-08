@@ -64,16 +64,12 @@ class InstanceManagerViewModel(
                     .find { it.name == instance.versionFilter }
                     ?: VersionType.release
 
-                val versions = uiState.value.versions.toMutableList()
-                versions.addFirst(instance.version)
-
                 _uiState.update {
                     it.copy(
                         instanceName = instance.instanceName,
                         width = instance.width.toString(),
                         height = instance.height.toString(),
                         versionFilter = versionFilter,
-                        versions = versions,
                         version = instance.version,
                         javaExecutable = instance.javaExec,
                         JVMArgs = instance.JVMARGS,
@@ -124,7 +120,10 @@ class InstanceManagerViewModel(
     fun setInstanceFolder(folder: String) {
     }
 
-    fun setVersionFilter(filter: VersionType) {
+    fun setVersionFilter(filter: String) {
+
+        val filter = uiState.value.versionFilters.find { it.name == filter }!!
+
         _uiState.update {
             it.copy(versionFilter = filter)
         }

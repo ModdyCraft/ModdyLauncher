@@ -9,7 +9,8 @@ import androidx.compose.ui.util.fastForEachIndexed
 @Composable
 fun DropDownMenuField(
     options: List<String>,
-    selected: (Int) -> Unit,
+    selectedOption: String,
+    selected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -25,7 +26,7 @@ fun DropDownMenuField(
         modifier = modifier
     ) {
         OutlinedTextField(
-            value = options[selectedIndex],
+            value = selectedOption,
             onValueChange = {},
             readOnly = true,
             trailingIcon = {
@@ -45,7 +46,7 @@ fun DropDownMenuField(
                     text = { Text(s) },
                     onClick = {
                         selectedIndex = i
-                        selected(i)
+                        selected(s)
                         expanded = false
                     }
                 )

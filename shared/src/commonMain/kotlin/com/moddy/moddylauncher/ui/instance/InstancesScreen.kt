@@ -77,7 +77,8 @@ fun InstanceManagerScreen(
         Row {
             DropDownMenuField(
                 options = uiState.versionFilters.map { it.name },
-                selected = { viewModel.setVersionFilter(uiState.versionFilters[it]) },
+                selectedOption = uiState.versionFilter.name,
+                selected = { viewModel.setVersionFilter(it) },
                 modifier = Modifier.width(150.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -94,7 +95,8 @@ fun InstanceManagerScreen(
 
         DropDownMenuField(
             options = uiState.versions,
-            selected = { viewModel.setVersion(uiState.versions[it]) },
+            selectedOption = uiState.version,
+            selected = { viewModel.setVersion(it) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -102,8 +104,9 @@ fun InstanceManagerScreen(
 
         DropDownMenuField(
             options = uiState.jreList,
+            selectedOption = uiState.javaExecutable,
             selected = {
-                viewModel.setJavaExecutable(uiState.jreList[it])
+                viewModel.setJavaExecutable(it)
             },
             modifier = Modifier.fillMaxWidth()
         )

@@ -26,5 +26,15 @@ compose.desktop {
 
             modules("java.sql")
         }
+
+        buildTypes {
+            release {
+                proguard {
+                    configurationFiles.from(
+                        project.file("proguard-rules.pro")
+                    )
+                }
+            }
+        }
     }
 }

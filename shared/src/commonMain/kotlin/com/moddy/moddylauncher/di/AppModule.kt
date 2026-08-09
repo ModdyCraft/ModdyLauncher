@@ -12,7 +12,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.*
 import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
@@ -22,15 +22,18 @@ import org.koin.dsl.module
 val AppModule = module {
 
     single {
+        val jsonInstance = Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
+
         HttpClient(CIO) {
 
             install(HttpCache)
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                        isLenient = true
-                    }
+                register(
+                    io.ktor.http.ContentType.Application.Json,
+                    KotlinxSerializationConverter(jsonInstance)
                 )
             }
 
